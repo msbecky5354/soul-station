@@ -8,15 +8,16 @@ import defaultVerses from './verses.json';
 const fallbackVerse = {
   id: "fallback-001",
   primary_emotion: "陪伴與被愛",
-  reference: "馬太福音 11:28",
-  verse: "凡勞苦擔重擔的人可以到我這裡來，我就使你們得安息。",
-  mood_tags: "#好攰 #需要休息 #頂唔順",
-  q1: "我覺得自己真係撐唔住啦...",
-  a1: "神睇到你嘅疲倦。祂無要求你做一個完美嘅超人，當你覺得孭唔起身上嘅重擔時，祂張開雙手，邀請你過嚟唞下。你可以將一切嘅委屈同壓力放低喺祂面前。",
-  q2: "我唔知點樣先可以真正放鬆...",
-  a2: "真正嘅安息，唔係咩都唔做，而係知道有人為你托住個底。試下合埋眼深呼吸，同神講『我交畀祢啦』，俾自己個心放一個短假。",
-  conclusion: "容許自己軟弱，因為神嘅懷抱係你最安全嘅休息站。",
-  youtube_url: null
+  reference: "系統診斷提示",
+  verse: "這是一條離線備用經文。代表你的 n8n 系統目前並未成功連線。",
+  mood_tags: "#系統診斷中",
+  q1: "點解我睇唔到 YouTube 掣？",
+  a1: "因為系統連線失敗，目前讀取緊本地 verses.json，而本地檔案沒有 youtube_url 欄位。",
+  q2: "我應該點做？",
+  a2: "請檢查 n8n 工作流是否已經設定為 'Active' (啟動狀態)。",
+  conclusion: "排查錯誤是開發必經之路，我們一起解決它。",
+  youtube_url: null,
+  isFallback: true // 診斷標記
 };
 
 // Vercel 安全版 UI 樣式設定
@@ -90,14 +91,6 @@ export default function App() {
     }
   }, []);
 
-  const fuse = useMemo(() => {
-    if (!localDatabase || localDatabase.length === 0) return null;
-    return new Fuse(localDatabase, {
-      keys: [{ name: 'mood_tags', weight: 0.4 }, { name: 'q1', weight: 0.3 }, { name: 'q2', weight: 0.2 }, { name: 'primary_emotion', weight: 0.1 }],
-      threshold: 0.6, includeScore: true, ignoreLocation: true,
-    });
-  }, [localDatabase]);
-
   useEffect(() => {
     const savedName = localStorage.getItem('soulStationUserName');
     if (savedName) setUserName(savedName); 
@@ -132,7 +125,6 @@ export default function App() {
       setIsTransitioning(false);
 
       try {
-        // 發送 Webhook 請求至 n8n 工作流 (DeepSeek + Supabase 檢索)
         const response = await fetch('https://passionate-jerboa.pikapod.net/webhook/soul-station-search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -141,22 +133,22 @@ export default function App() {
 
         if (!response.ok) throw new Error('AI 連線錯誤');
 
-        // ✅ 新做法：直接接收 n8n 傳過嚟嘅 Supabase 完整經文資料！
         const data = await response.json();
-        
-        // 從 API 回傳的資料中直接提取完整經文物件 (假設 n8n 回傳的 key 叫 verse_data)
         let verseForEmotion = data.verse_data;
 
+        // 🌟 診斷燈號標記邏輯
         if (!verseForEmotion) {
-           const categoryVerses = localDatabase.filter(v => v.primary_emotion === selectedEmotion);
-           verseForEmotion = categoryVerses.length > 0 ? categoryVerses[Math.floor(Math.random() * categoryVerses.length)] : fallbackVerse;
+           verseForEmotion = fallbackVerse;
+           verseForEmotion.isFallback = true;
+        } else {
+           verseForEmotion.isFallback = false;
         }
 
         setTimeout(() => { setIsTransitioning(true); setTimeout(() => { setCurrentVerse(verseForEmotion); setRevealStep(0); setAppStage('RESULT'); setIsTransitioning(false); }, 400); }, 400);
       } catch (error) {
         console.error("AI 錯誤，啟用 Fallback 機制:", error);
-        const categoryVerses = localDatabase.filter(v => v.primary_emotion === selectedEmotion);
-        const verseForEmotion = categoryVerses.length > 0 ? categoryVerses[Math.floor(Math.random() * categoryVerses.length)] : fallbackVerse;
+        let verseForEmotion = fallbackVerse;
+        verseForEmotion.isFallback = true;
         setTimeout(() => { setIsTransitioning(true); setTimeout(() => { setCurrentVerse(verseForEmotion); setRevealStep(0); setAppStage('RESULT'); setIsTransitioning(false); }, 400); }, 400);
       }
     }, 400);
@@ -232,7 +224,6 @@ export default function App() {
         {showDoorAnimation && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FDFCF8] transition-opacity duration-500">
             <div className="flex flex-col items-center justify-center">
-              {/* 🌟 Vercel 防彈大門陰影 */}
               <div className="relative w-36 h-56 sm:w-44 sm:h-64 border-x-[3px] border-t-[3px] border-[#E5C07B]/50 rounded-t-[5rem] sm:rounded-t-[6rem] overflow-hidden shadow-2xl shadow-amber-500/20 bg-white/40">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#E5C07B]/70 to-transparent translate-y-full animate-[slideUpFade_1.5s_ease-in-out_forwards]"></div>
                 <Sparkles className="absolute top-10 sm:top-12 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 text-[#E5C07B] animate-pulse" strokeWidth={1.5} />
@@ -259,7 +250,6 @@ export default function App() {
             <div className="flex-1 flex justify-end items-center gap-3">
               <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式"><Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
               <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面"><Download className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
-              
             </div>
           </header>
 
@@ -290,8 +280,6 @@ export default function App() {
               </div>
             )}
 
-           
-
             {/* 2. 選擇情緒 */}
             {appStage === 'EMOTION' && (
               <div className="flex-1 flex flex-col justify-center animate-slide-up pt-6 pb-4">
@@ -310,7 +298,7 @@ export default function App() {
               </div>
             )}
 
-            {/* 3. 輸入心聲 */}
+            {/* 3. 輸入心聲 (✅ Bubble 建議已經完美回歸！) */}
             {appStage === 'INPUT' && (
               <div className="flex-1 flex flex-col justify-center animate-slide-up mt-4 pt-6">
                 <div className="mb-6 px-2">
@@ -327,6 +315,7 @@ export default function App() {
                     <Send className="w-5 h-5 ml-1" />
                   </button>
                 </div>
+                {/* 🌟 Bubble 建議區塊 */}
                 <div className="mt-6 px-3 animate-slide-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
                   <p className="text-[14px] font-wenkai tracking-widest text-[#8C8273] opacity-90 mb-4 ml-1">你可以試下直接點擊：</p>
                   <div className="flex flex-wrap gap-3">
@@ -352,6 +341,16 @@ export default function App() {
             {/* 5. 結果畫面 */}
             {appStage === 'RESULT' && currentVerse && (
               <div className="flex flex-col flex-1 pb-8">
+                
+                {/* 🌟 終極診斷指示燈 */}
+                <div className="flex justify-center mb-6 animate-slide-up">
+                  {currentVerse.isFallback ? (
+                    <span className="text-[11px] text-rose-600 font-bold border border-rose-300 bg-rose-50 px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>🔴 離線備用數據 (n8n 連線失敗)</span>
+                  ) : (
+                    <span className="text-[11px] text-emerald-600 font-bold border border-emerald-300 bg-emerald-50 px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500"></div>🟢 真實 Supabase 數據 (連線成功)</span>
+                  )}
+                </div>
+
                 <div className="flex flex-col items-end mb-8 animate-slide-up">
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${emotionStyles[selectedEmotion].border} ${emotionStyles[selectedEmotion].accent} bg-white/60 shadow-sm`}>選擇了「{selectedEmotion}」</span>
@@ -443,9 +442,9 @@ export default function App() {
                         </button>
 
                         {/* 🌟 多媒體延伸療癒功能：防彈 PlayCircle Icon + 懸浮 Tooltip */}
-{currentVerse.youtube_url && (
-  <a href={currentVerse.youtube_url} target="_blank" rel="noopener noreferrer" className="group relative bg-white/80 border-2 border-[#EAE3D9] text-[#E5C07B] px-6 py-4 rounded-[1.5rem] flex items-center justify-center hover:bg-white transition-colors shadow-sm active:scale-95">
-    <PlayCircle className="w-5 h-5" strokeWidth={2} />
+                        {currentVerse.youtube_url && (
+                          <a href={currentVerse.youtube_url} target="_blank" rel="noopener noreferrer" className="group relative bg-white/80 border-2 border-[#EAE3D9] text-[#E5C07B] px-6 py-4 rounded-[1.5rem] flex items-center justify-center hover:bg-white transition-colors shadow-sm active:scale-95">
+                            <PlayCircle className="w-5 h-5" strokeWidth={2} />
                             <span className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#5A5245] text-[#FDFCF8] text-[12px] font-wenkai tracking-widest px-3.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none shadow-lg z-50">
                               療癒影音
                               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[#5A5245]"></span>
