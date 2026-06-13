@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, MessageCircle, Heart, Wind, Compass, Coffee, ExternalLink, Sparkles, Send, Loader2, User, Copy, Check, Download, Share2, MoreVertical } from 'lucide-react';
+import { ChevronLeft, MessageCircle, Heart, Wind, Compass, Coffee, ExternalLink, Sparkles, Send, Loader2, User, Copy, Check, Download, Share2, MoreVertical, PlayCircle } from 'lucide-react';
 import Fuse from 'fuse.js';
 
+// 備用經文庫 (當 n8n 斷線時的救命機制)
 import defaultVerses from './verses.json'; 
 
 const fallbackVerse = {
@@ -18,7 +19,7 @@ const fallbackVerse = {
   youtube_url: null
 };
 
-// 🌟 陰影已全面替換為 Vercel 100% 兼容嘅標準寫法
+// Vercel 安全版 UI 樣式設定
 const emotionStyles = {
   "醫治與忍耐": { 
     gradient: "from-emerald-50/80 to-teal-100/50", accent: "text-emerald-700", border: "border-emerald-400", focusRing: "focus:ring-emerald-200",
@@ -60,6 +61,7 @@ export default function App() {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   
+  // PWA 安裝狀態
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
@@ -130,6 +132,7 @@ export default function App() {
       setIsTransitioning(false);
 
       try {
+        // 發送 Webhook 請求至 n8n 工作流 (DeepSeek + Supabase 檢索)
         const response = await fetch('https://passionate-jerboa.pikapod.net/webhook/soul-station-search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -138,8 +141,11 @@ export default function App() {
 
         if (!response.ok) throw new Error('AI 連線錯誤');
 
+        // ✅ 新做法：直接接收 n8n 傳過嚟嘅 Supabase 完整經文資料！
         const data = await response.json();
-        let verseForEmotion = localDatabase.find(v => v.id === data.found_id?.trim());
+        
+        // 從 API 回傳的資料中直接提取完整經文物件 (假設 n8n 回傳的 key 叫 verse_data)
+        let verseForEmotion = data.verse_data;
 
         if (!verseForEmotion) {
            const categoryVerses = localDatabase.filter(v => v.primary_emotion === selectedEmotion);
@@ -148,7 +154,7 @@ export default function App() {
 
         setTimeout(() => { setIsTransitioning(true); setTimeout(() => { setCurrentVerse(verseForEmotion); setRevealStep(0); setAppStage('RESULT'); setIsTransitioning(false); }, 400); }, 400);
       } catch (error) {
-        console.error("AI 錯誤:", error);
+        console.error("AI 錯誤，啟用 Fallback 機制:", error);
         const categoryVerses = localDatabase.filter(v => v.primary_emotion === selectedEmotion);
         const verseForEmotion = categoryVerses.length > 0 ? categoryVerses[Math.floor(Math.random() * categoryVerses.length)] : fallbackVerse;
         setTimeout(() => { setIsTransitioning(true); setTimeout(() => { setCurrentVerse(verseForEmotion); setRevealStep(0); setAppStage('RESULT'); setIsTransitioning(false); }, 400); }, 400);
@@ -226,12 +232,12 @@ export default function App() {
         {showDoorAnimation && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FDFCF8] transition-opacity duration-500">
             <div className="flex flex-col items-center justify-center">
-              {/* 🌟 防彈大門陰影 */}
+              {/* 🌟 Vercel 防彈大門陰影 */}
               <div className="relative w-36 h-56 sm:w-44 sm:h-64 border-x-[3px] border-t-[3px] border-[#E5C07B]/50 rounded-t-[5rem] sm:rounded-t-[6rem] overflow-hidden shadow-2xl shadow-amber-500/20 bg-white/40">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#E5C07B]/70 to-transparent translate-y-full animate-[slideUpFade_1.5s_ease-in-out_forwards]"></div>
                 <Sparkles className="absolute top-10 sm:top-12 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 text-[#E5C07B] animate-pulse" strokeWidth={1.5} />
               </div>
-              <p className="mt-10 text-[#8C8273] font-tc-serif tracking-[0.3em] text-[14px] sm:text-[15px] animate-pulse">正在為開啟空間...</p>
+              <p className="mt-10 text-[#8C8273] font-tc-serif tracking-[0.3em] text-[14px] sm:text-[15px] animate-pulse">正在為你開啟空間...</p>
             </div>
           </div>
         )}
@@ -261,7 +267,6 @@ export default function App() {
             
             {/* 1. 大門口 */}
             {appStage === 'NAME_INPUT' && (
-              // 🌟 移除了強制推高的 mt-[-5vh]，改為 pt-6 確保手機版絕對唔會撞字
               <div className="flex-1 flex flex-col justify-center items-center animate-slide-up pt-6 pb-4">
                 <div className="relative mb-10 text-center px-4 w-full mt-2">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#E5C07B]/25 blur-[60px] rounded-full pointer-events-none"></div>
@@ -270,10 +275,8 @@ export default function App() {
                 </div>
                 
                 <div className="relative px-2 w-full max-w-[85%] z-10">
-                  {/* 🌟 修正輸入框陰影，保證顯示 */}
                   <input type="text" className="w-full bg-white/70 backdrop-blur-md border-2 border-white/90 rounded-[2rem] px-6 py-5 text-[17px] text-center text-[#5A5245] shadow-xl shadow-amber-500/5 focus:outline-none focus:border-[#E5C07B]/50 focus:ring-4 focus:ring-amber-500/10 focus:bg-white/90 transition-all placeholder:text-[#D1C9BE] font-light tracking-widest" placeholder="你的名字 / 暱稱" value={userName} onChange={(e) => setUserName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleNameSubmit(); }} />
                   <div className="flex justify-center mt-10">
-                    {/* 🌟 終極防彈按鈕：使用 style 強制注入漸層顏色，無懼 Vercel 報錯！ */}
                     <button 
                       onClick={handleNameSubmit} 
                       disabled={!userName.trim()} 
@@ -286,6 +289,8 @@ export default function App() {
                 </div>
               </div>
             )}
+
+           
 
             {/* 2. 選擇情緒 */}
             {appStage === 'EMOTION' && (
@@ -437,9 +442,14 @@ export default function App() {
                           </span>
                         </button>
 
-                        {currentVerse.youtube_url && (
-                          <a href={currentVerse.youtube_url} target="_blank" rel="noopener noreferrer" className="bg-white/80 border-2 border-[#EAE3D9] text-[#E5C07B] px-6 py-4 rounded-[1.5rem] flex items-center justify-center hover:bg-white transition-colors shadow-sm active:scale-95">
-                            <ExternalLink className="w-5 h-5" strokeWidth={2} />
+                        {/* 🌟 多媒體延伸療癒功能：防彈 PlayCircle Icon + 懸浮 Tooltip */}
+{currentVerse.youtube_url && (
+  <a href={currentVerse.youtube_url} target="_blank" rel="noopener noreferrer" className="group relative bg-white/80 border-2 border-[#EAE3D9] text-[#E5C07B] px-6 py-4 rounded-[1.5rem] flex items-center justify-center hover:bg-white transition-colors shadow-sm active:scale-95">
+    <PlayCircle className="w-5 h-5" strokeWidth={2} />
+                            <span className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#5A5245] text-[#FDFCF8] text-[12px] font-wenkai tracking-widest px-3.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none shadow-lg z-50">
+                              療癒影音
+                              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[#5A5245]"></span>
+                            </span>
                           </a>
                         )}
                       </div>
