@@ -1,0 +1,21 @@
+{
+  "short_name": "心靈補給",
+  "name": "心靈補給站 - 尋找你的平靜",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FDFCF8",
+  "background_color": "#FDFCF8",
+  "description": "一個專為繁忙都市人預備的安靜角落。"
+}
