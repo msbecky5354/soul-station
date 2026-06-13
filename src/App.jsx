@@ -259,7 +259,7 @@ export default function App() {
             <div className="flex-1 flex justify-end items-center gap-3">
               <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式"><Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
               <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面"><Download className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
-              <span className="text-[9px] font-bold tracking-[0.2em] text-[#E5C07B] border border-[#E5C07B]/40 bg-white/60 px-2 py-0.5 rounded-full shadow-sm ml-1 hidden sm:block">BETA</span>
+              
             </div>
           </header>
 
