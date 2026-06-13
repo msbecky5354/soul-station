@@ -279,14 +279,18 @@ export default function App() {
               </div>
             )}
 
-            {/* 2. 選擇情緒 */}
+           {/* 2. 選擇情緒 */}
             {appStage === 'EMOTION' && (
-              <div className="flex-1 flex flex-col justify-center animate-slide-up mt-[-5vh]">
-                <div className="mb-14 text-center">
+              // 🌟 移除咗 mt-[-5vh]，改用 pt-6 確保同頂部 Header 保持安全距離
+              <div className="flex-1 flex flex-col justify-center animate-slide-up pt-6 pb-4">
+                {/* 🌟 手機版縮小少少 mb (mb-10)，等啲掣唔會跌得太落 */}
+                <div className="mb-10 sm:mb-14 text-center mt-2">
                   <h2 className="text-[32px] sm:text-4xl font-wenkai mb-4 text-[#5A5245] truncate px-4">{userName}，你好。</h2>
                   <p className="text-[#8C8273] font-wenkai tracking-[0.15em] text-[16px] mt-3">此刻的你，最需要甚麼？</p>
                 </div>
+                
                 <div className="grid grid-cols-2 gap-4 px-2">
+                  {/* ... 下面啲掣維持原狀 ... */}
                   {Object.entries(emotionStyles).map(([emotion, style]) => (
                     <button key={emotion} onClick={() => handleEmotionSelect(emotion)} className={`group relative flex flex-col items-center justify-center p-8 rounded-[2rem] transition-all duration-300 active:scale-95 bg-white/60 hover:bg-white backdrop-blur-md border border-white ${style.glow} hover:-translate-y-1`}>
                       <div className={`mb-4 p-4 rounded-2xl bg-gradient-to-br ${style.gradient} border ${style.border} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>{style.icon}</div>
