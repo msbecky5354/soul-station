@@ -18,28 +18,29 @@ const fallbackVerse = {
   youtube_url: null
 };
 
+// 🌟 已將所有複雜 glow 換成原生防彈寫法
 const emotionStyles = {
   "醫治與忍耐": { 
     gradient: "from-emerald-50/80 to-teal-100/50", accent: "text-emerald-700", border: "border-emerald-400", focusRing: "focus:ring-emerald-200",
-    icon: <Heart className="w-6 h-6 text-emerald-600" strokeWidth={1.5} />, glow: "shadow-[0_0_30px_rgba(16,185,129,0.15)]",
+    icon: <Heart className="w-6 h-6 text-emerald-600" strokeWidth={1.5} />, glow: "shadow-xl shadow-emerald-500/15",
     placeholder: "例如：最近有一種講唔出嘅無力感，身心都覺得好疲累...",
     suggestions: ["我最近身體好唔舒服。", "其實我心入面覺得好痛。", "今日精神唔錯，好感恩！"]
   },
   "平靜與清晰": { 
     gradient: "from-blue-50/80 to-sky-100/50", accent: "text-blue-700", border: "border-blue-400", focusRing: "focus:ring-blue-200",
-    icon: <Wind className="w-6 h-6 text-blue-600" strokeWidth={1.5} />, glow: "shadow-[0_0_30px_rgba(59,130,246,0.15)]",
+    icon: <Wind className="w-6 h-6 text-blue-600" strokeWidth={1.5} />, glow: "shadow-xl shadow-blue-500/15",
     placeholder: "例如：生活節奏太快，好想搵一個可以俾自己唞氣同沉澱嘅空間...",
     suggestions: ["個腦不停轉，搞到成日失眠。", "最近好多嘢煩，覺得好大壓力。", "終於有一刻平靜，真係好感恩！"]
   },
   "方向與信心": { 
     gradient: "from-amber-50/80 to-orange-100/50", accent: "text-amber-700", border: "border-amber-400", focusRing: "focus:ring-amber-200",
-    icon: <Compass className="w-6 h-6 text-amber-600" strokeWidth={1.5} />, glow: "shadow-[0_0_30px_rgba(245,158,11,0.15)]",
+    icon: <Compass className="w-6 h-6 text-amber-600" strokeWidth={1.5} />, glow: "shadow-xl shadow-amber-500/15",
     placeholder: "例如：面對緊人生嘅交叉點，唔知點樣做決定先係對自己最好...",
     suggestions: ["我對未來嘅前路覺得好迷茫。", "做錯咗決定，依家覺得好後悔。", "終於搵到新方向，個心定咗好多！"]
   },
   "陪伴與被愛": { 
     gradient: "from-rose-50/80 to-pink-100/50", accent: "text-rose-700", border: "border-rose-400", focusRing: "focus:ring-rose-200",
-    icon: <Coffee className="w-6 h-6 text-rose-600" strokeWidth={1.5} />, glow: "shadow-[0_0_30px_rgba(244,63,94,0.15)]",
+    icon: <Coffee className="w-6 h-6 text-rose-600" strokeWidth={1.5} />, glow: "shadow-xl shadow-rose-500/15",
     placeholder: "例如：有時候喺人群之中，反而會覺得得番自己一個人...",
     suggestions: ["覺得身邊好似無人真正明白我。", "呢排真係覺得自己好孤單。", "今日深深感受到被愛，好感恩！"]
   },
@@ -225,7 +226,8 @@ export default function App() {
         {showDoorAnimation && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FDFCF8] transition-opacity duration-500">
             <div className="flex flex-col items-center justify-center">
-              <div className="relative w-36 h-56 sm:w-44 sm:h-64 border-x-[3px] border-t-[3px] border-[#E5C07B]/50 rounded-t-[5rem] sm:rounded-t-[6rem] overflow-hidden shadow-[0_0_100px_rgba(229,192,123,0.4)] bg-white/40">
+              {/* 🌟 已防彈化：shadow-2xl shadow-[#E5C07B]/40 */}
+              <div className="relative w-36 h-56 sm:w-44 sm:h-64 border-x-[3px] border-t-[3px] border-[#E5C07B]/50 rounded-t-[5rem] sm:rounded-t-[6rem] overflow-hidden shadow-2xl shadow-[#E5C07B]/40 bg-white/40">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#E5C07B]/70 to-transparent translate-y-full animate-[slideUpFade_1.5s_ease-in-out_forwards]"></div>
                 <Sparkles className="absolute top-10 sm:top-12 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 text-[#E5C07B] animate-pulse" strokeWidth={1.5} />
               </div>
@@ -236,7 +238,7 @@ export default function App() {
 
         {selectedEmotion && <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-white/20 backdrop-blur-[100px] pointer-events-none rounded-full bg-breath"></div>}
 
-        <div className="w-full max-w-md bg-white/40 backdrop-blur-2xl min-h-screen shadow-[0_0_40px_rgba(0,0,0,0.03)] relative flex flex-col z-10 border-x border-white/50">
+        <div className="w-full max-w-md bg-white/40 backdrop-blur-2xl min-h-screen shadow-2xl shadow-black/5 relative flex flex-col z-10 border-x border-white/50">
           
           <header className="p-6 pb-2 pt-12 flex items-center justify-between z-20 sticky top-0 bg-gradient-to-b from-white/80 to-transparent">
             <div className="flex-1 flex justify-start">
@@ -244,21 +246,13 @@ export default function App() {
                 <button onClick={handleBack} className="p-2 -ml-2 rounded-full hover:bg-black/5 transition-all active:scale-90"><ChevronLeft className="w-6 h-6 text-slate-500" strokeWidth={1.5} /></button>
               )}
             </div>
-            
             <div className="flex flex-col items-center flex-none">
               <Sparkles className="w-4 h-4 text-[#E5C07B] mb-1" />
               <h1 className="text-[15px] font-tc-serif font-medium tracking-[0.3em] text-slate-600 uppercase">心靈補給站</h1>
             </div>
-            
             <div className="flex-1 flex justify-end items-center gap-3">
-              <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式">
-                <Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} />
-              </button>
-              
-              <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面">
-                <Download className="w-[18px] h-[18px]" strokeWidth={1.5} />
-              </button>
-              
+              <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式"><Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
+              <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面"><Download className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
               <span className="text-[9px] font-bold tracking-[0.2em] text-[#E5C07B] border border-[#E5C07B]/40 bg-white/60 px-2 py-0.5 rounded-full shadow-sm ml-1 hidden sm:block">BETA</span>
             </div>
           </header>
@@ -275,11 +269,12 @@ export default function App() {
                 </div>
                 
                 <div className="relative px-2 w-full max-w-[85%] z-10">
-                  <input type="text" className="w-full bg-white/70 backdrop-blur-md border-2 border-white/90 rounded-[2rem] px-6 py-5 text-[17px] text-center text-[#5A5245] shadow-[0_8px_30px_rgb(229,192,123,0.08)] focus:outline-none focus:border-[#E5C07B]/40 focus:ring-4 focus:ring-[#E5C07B]/10 focus:bg-white/90 transition-all placeholder:text-[#D1C9BE] font-light tracking-widest" placeholder="你的名字 / 暱稱" value={userName} onChange={(e) => setUserName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleNameSubmit(); }} />
+                  {/* 🌟 已防彈化：shadow-xl shadow-[#E5C07B]/10 */}
+                  <input type="text" className="w-full bg-white/70 backdrop-blur-md border-2 border-white/90 rounded-[2rem] px-6 py-5 text-[17px] text-center text-[#5A5245] shadow-xl shadow-[#E5C07B]/10 focus:outline-none focus:border-[#E5C07B]/40 focus:ring-4 focus:ring-[#E5C07B]/10 focus:bg-white/90 transition-all placeholder:text-[#D1C9BE] font-light tracking-widest" placeholder="你的名字 / 暱稱" value={userName} onChange={(e) => setUserName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && userName.trim()) handleNameSubmit(); }} />
                   <div className="flex justify-center mt-10">
-                    <button onClick={handleNameSubmit} disabled={!userName.trim()} className={`px-10 py-4 rounded-full font-medium tracking-[0.2em] text-[15px] transition-all duration-500 flex items-center justify-center gap-2 ${userName.trim() ? 'bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white hover:shadow-[0_8px_20px_rgba(229,192,123,0.3)] active:scale-95 hover:-translate-y-0.5' : 'bg-white/80 text-[#D1C9BE] border border-[#EAE3D9] cursor-not-allowed'}`}>進入空間</button>
+                    {/* 🌟 已防彈化：hover:shadow-lg hover:shadow-[#E5C07B]/30 */}
+                    <button onClick={handleNameSubmit} disabled={!userName.trim()} className={`px-10 py-4 rounded-full font-medium tracking-[0.2em] text-[15px] transition-all duration-500 flex items-center justify-center gap-2 ${userName.trim() ? 'bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white hover:shadow-lg hover:shadow-[#E5C07B]/30 active:scale-95 hover:-translate-y-0.5' : 'bg-white/80 text-[#D1C9BE] border border-[#EAE3D9] cursor-not-allowed'}`}>進入空間</button>
                   </div>
-                  {/* 已移除 Dev Shortcut 測試按鈕 */}
                 </div>
               </div>
             )}
@@ -311,8 +306,9 @@ export default function App() {
                   <p className="text-slate-500 font-light tracking-wide text-[15px] leading-relaxed mt-2">說出你的心聲，神正在聆聽。</p>
                 </div>
                 <div className="relative px-2 z-10">
-                  <textarea className={`w-full bg-white/70 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} rounded-[2rem] p-6 pb-16 font-wenkai text-[17px] leading-[1.8] text-[#5A5245] shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus:outline-none focus:ring-4 ${emotionStyles[selectedEmotion].focusRing} focus:bg-white transition-all resize-none h-40`} placeholder={emotionStyles[selectedEmotion].placeholder} value={userInput} onChange={(e) => setUserInput(e.target.value)} />
-                  <button onClick={handleSubmitInput} disabled={!userInput.trim()} className={`absolute bottom-4 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${userInput.trim() ? 'bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white hover:shadow-[0_8px_20px_rgba(229,192,123,0.3)] active:scale-95' : 'bg-white/80 text-[#D1C9BE] border border-[#EAE3D9] cursor-not-allowed'}`}><Send className="w-5 h-5 ml-1" /></button>
+                  {/* 🌟 已防彈化：shadow-xl shadow-black/5 */}
+                  <textarea className={`w-full bg-white/70 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} rounded-[2rem] p-6 pb-16 font-wenkai text-[17px] leading-[1.8] text-[#5A5245] shadow-xl shadow-black/5 focus:outline-none focus:ring-4 ${emotionStyles[selectedEmotion].focusRing} focus:bg-white transition-all resize-none h-40`} placeholder={emotionStyles[selectedEmotion].placeholder} value={userInput} onChange={(e) => setUserInput(e.target.value)} />
+                  <button onClick={handleSubmitInput} disabled={!userInput.trim()} className={`absolute bottom-4 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${userInput.trim() ? 'bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white hover:shadow-lg hover:shadow-[#E5C07B]/30 active:scale-95' : 'bg-white/80 text-[#D1C9BE] border border-[#EAE3D9] cursor-not-allowed'}`}><Send className="w-5 h-5 ml-1" /></button>
                 </div>
                 <div className="mt-6 px-3 animate-slide-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
                   <p className="text-[14px] font-wenkai tracking-widest text-[#8C8273] opacity-90 mb-4 ml-1">你可以試下直接點擊：</p>
@@ -412,7 +408,8 @@ export default function App() {
                     
                     <div className="flex flex-col gap-3 mt-6">
                       <div className="flex gap-3">
-                        <button onClick={handleShare} className="flex-1 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-4 rounded-[1.5rem] text-[16px] font-wenkai tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_20px_rgba(229,192,123,0.3)] transition-all active:scale-95 shadow-md">
+                        {/* 🌟 已防彈化：hover:shadow-lg hover:shadow-[#E5C07B]/30 */}
+                        <button onClick={handleShare} className="flex-1 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-4 rounded-[1.5rem] text-[16px] font-wenkai tracking-wider flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#E5C07B]/30 transition-all active:scale-95 shadow-md">
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                           分享這份平靜
                         </button>
@@ -470,7 +467,7 @@ export default function App() {
               <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">📜 使用條款</h4><p>本程式所載之所有內容僅供用戶作個人心靈輔導、靈修、冥想及良性對話參考之用。用戶在使用過程中輸入的所有心聲與個人暱稱，均僅存儲於用戶本地設備的瀏覽器緩存（LocalStorage）中，我們承諾絕不收集或向第三方洩漏您的隱私。</p></div>
               <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">⚠️ 免責聲明</h4><p>本程式由 AI 大腦輔助生成對話與回應，所有內容均不代表權威醫療、心理諮商或法律診斷意見。若您正經歷嚴重的心理困擾、抑鬱、焦慮或任何身心危機，本程式無法替代專業的醫療救助。請務必及時尋求專業心理醫生、輔導員或醫療機構的正式協助。</p></div>
             </div>
-            <button onClick={() => setShowModal(false)} className="w-full mt-4 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-3.5 rounded-[1.5rem] font-wenkai text-[15px] tracking-widest hover:shadow-[0_8px_20px_rgba(229,192,123,0.2)] transition-all active:scale-95">我知道了，返回空間</button>
+            <button onClick={() => setShowModal(false)} className="w-full mt-4 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-3.5 rounded-[1.5rem] font-wenkai text-[15px] tracking-widest hover:shadow-lg hover:shadow-[#E5C07B]/20 transition-all active:scale-95">我知道了，返回空間</button>
           </div>
         </div>
       )}
@@ -488,7 +485,6 @@ export default function App() {
 
             <div className="space-y-5 text-[14px] font-wenkai text-[#6E6454] leading-relaxed">
               
-              {/* 🍎 iOS 教學 */}
               <div className="bg-white/60 p-5 rounded-2xl border border-[#EAE3D9] shadow-sm">
                 <h4 className="text-[#5A5245] font-bold text-[15px] mb-3 flex items-center gap-2">🍎 蘋果 iOS (Safari)</h4>
                 <ol className="list-decimal pl-5 space-y-2">
@@ -498,7 +494,6 @@ export default function App() {
                 </ol>
               </div>
 
-              {/* 🤖 Android 教學 */}
               <div className="bg-white/60 p-5 rounded-2xl border border-[#EAE3D9] shadow-sm">
                 <h4 className="text-[#5A5245] font-bold text-[15px] mb-3 flex items-center gap-2">🤖 安卓 Android (Chrome)</h4>
                 <ol className="list-decimal pl-5 space-y-2">
@@ -509,7 +504,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* 一鍵自動安裝按鈕 */}
             {isInstallable && (
               <button 
                 onClick={async () => {
@@ -520,7 +514,7 @@ export default function App() {
                     setDeferredPrompt(null);
                   }
                 }} 
-                className="w-full mt-6 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-3.5 rounded-[1.5rem] font-wenkai text-[15px] tracking-widest hover:shadow-[0_8px_20px_rgba(229,192,123,0.2)] transition-all active:scale-95 flex justify-center items-center gap-2"
+                className="w-full mt-6 bg-gradient-to-r from-[#E5C07B] to-[#d4ad64] text-white py-3.5 rounded-[1.5rem] font-wenkai text-[15px] tracking-widest hover:shadow-lg hover:shadow-[#E5C07B]/30 transition-all active:scale-95 flex justify-center items-center gap-2"
               >
                 <Download className="w-4 h-4" /> 系統一鍵安裝
               </button>
