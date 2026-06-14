@@ -2,23 +2,22 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, MessageCircle, Heart, Wind, Compass, Coffee, ExternalLink, Sparkles, Send, Loader2, User, Copy, Check, Download, Share2, MoreVertical, PlayCircle } from 'lucide-react';
 import Fuse from 'fuse.js';
 
-// 備用經文庫 (當 n8n 斷線時的救命機制)
-import defaultVerses from './verses.json'; 
-
+// 備用經文庫 (當連線不穩定時的溫柔備案)
 const fallbackVerse = {
   id: "fallback-001",
   primary_emotion: "陪伴與被愛",
-  reference: "系統診斷提示",
-  verse: "這是一條離線備用經文。代表你的 n8n 系統目前並未成功連線。",
-  mood_tags: "#系統診斷中",
-  q1: "點解我睇唔到 YouTube 掣？",
-  a1: "因為系統連線失敗，目前讀取緊本地 verses.json，而本地檔案沒有 youtube_url 欄位。",
-  q2: "我應該點做？",
-  a2: "請檢查 n8n 工作流是否已經設定為 'Active' (啟動狀態)。",
-  conclusion: "排查錯誤是開發必經之路，我們一起解決它。",
+  reference: "給你的心靈小語",
+  verse: "無論此刻你經歷著什麼，請記得你並不孤單。給自己一點時間，慢慢來。",
+  mood_tags: ["#平靜", "#同行", "#BETA測試中"],
+  q1: "點解系統好似冇反應？",
+  a1: "因為我哋嘅應用程式依家處於 BETA 測試階段，伺服器可能需要少少時間休息同調整。唔使擔心，我哋嘅團隊正在努力優化中。",
+  q2: "我依家應該點做？",
+  a2: "你可以嘗試稍後再重新載入頁面。喺等待嘅時候，不妨深呼吸，俾自己幾分鐘安靜嘅時間。",
+  conclusion: "感謝你參與我哋嘅 BETA 測試，陪我哋一齊成長。",
   youtube_url: null,
-  isFallback: true // 診斷標記
+  isFallback: true
 };
+
 
 // Vercel 安全版 UI 樣式設定
 const emotionStyles = {
@@ -238,20 +237,22 @@ export default function App() {
         <div className="w-full max-w-md bg-white/40 backdrop-blur-2xl min-h-screen shadow-2xl shadow-black/5 relative flex flex-col z-10 border-x border-white/50">
           
           <header className="p-6 pb-2 pt-12 flex items-center justify-between z-20 sticky top-0 bg-gradient-to-b from-white/80 to-transparent">
-            <div className="flex-1 flex justify-start">
-              {(appStage === 'EMOTION' || appStage === 'INPUT' || appStage === 'RESULT') && (
-                <button onClick={handleBack} className="p-2 -ml-2 rounded-full hover:bg-black/5 transition-all active:scale-90"><ChevronLeft className="w-6 h-6 text-slate-500" strokeWidth={1.5} /></button>
-              )}
-            </div>
-            <div className="flex flex-col items-center flex-none">
-              <Sparkles className="w-4 h-4 text-[#E5C07B] mb-1" />
-              <h1 className="text-[15px] font-tc-serif font-medium tracking-[0.3em] text-slate-600 uppercase">心靈補給站</h1>
-            </div>
-            <div className="flex-1 flex justify-end items-center gap-3">
-              <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式"><Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
-              <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面"><Download className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
-            </div>
-          </header>
+  <div className="flex-1 flex justify-start">
+    {(appStage === 'EMOTION' || appStage === 'INPUT' || appStage === 'RESULT') && (
+      <button onClick={handleBack} className="p-2 -ml-2 rounded-full hover:bg-black/5 transition-all active:scale-90"><ChevronLeft className="w-6 h-6 text-slate-500" strokeWidth={1.5} /></button>
+    )}
+  </div>
+  <div className="flex flex-col items-center flex-none relative"> {/* 加入 relative 定位 */}
+    <Sparkles className="w-4 h-4 text-[#E5C07B] mb-1" />
+    <h1 className="text-[15px] font-tc-serif font-medium tracking-[0.3em] text-slate-600 uppercase">心靈補給站</h1>
+    {/* 🌟 優雅的 BETA 標籤 */}
+    <span className="absolute -top-1 -right-8 text-[9px] font-bold tracking-widest text-[#E5C07B] bg-[#E5C07B]/10 px-1.5 py-0.5 rounded-sm border border-[#E5C07B]/20">BETA</span>
+  </div>
+  <div className="flex-1 flex justify-end items-center gap-3">
+    <button onClick={handleShareApp} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="分享應用程式"><Share2 className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
+    <button onClick={() => setShowInstallModal(true)} className="text-[#8C8273] hover:text-[#E5C07B] transition-colors" title="安裝到主畫面"><Download className="w-[18px] h-[18px]" strokeWidth={1.5} /></button>
+  </div>
+</header>
 
           <main className={`flex-1 flex flex-col px-6 pb-12 transition-all duration-500 ${isTransitioning ? 'opacity-0 scale-[0.98]' : 'opacity-100 scale-100'}`}>
             
@@ -342,14 +343,7 @@ export default function App() {
             {appStage === 'RESULT' && currentVerse && (
               <div className="flex flex-col flex-1 pb-8">
                 
-                {/* 🌟 終極診斷指示燈 */}
-                <div className="flex justify-center mb-6 animate-slide-up">
-                  {currentVerse.isFallback ? (
-                    <span className="text-[11px] text-rose-600 font-bold border border-rose-300 bg-rose-50 px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>🔴 離線備用數據 (n8n 連線失敗)</span>
-                  ) : (
-                    <span className="text-[11px] text-emerald-600 font-bold border border-emerald-300 bg-emerald-50 px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500"></div>🟢 真實 Supabase 數據 (連線成功)</span>
-                  )}
-                </div>
+               
 
                 <div className="flex flex-col items-end mb-8 animate-slide-up">
                   <div className="flex items-center gap-2 mb-2">
