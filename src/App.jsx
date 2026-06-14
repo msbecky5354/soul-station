@@ -383,9 +383,12 @@ export default function App() {
                     </div>
                   )}
 
-                  {revealStep === 0 && (
-                     <div className="flex justify-center pt-2 animate-slide-up">
-                        <button onClick={handleRevealNext} className={`px-6 py-2.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} ${emotionStyles[selectedEmotion].accent} text-xs font-bold tracking-widest transition-all shadow-sm hover:shadow-md flex items-center gap-2`}>繼續默想</button>
+                 {revealStep === 0 && (
+                     <div className="flex justify-center pt-6 pb-2 animate-slide-up">
+                        <button onClick={handleRevealNext} className={`flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} ${emotionStyles[selectedEmotion].accent} font-wenkai text-[16px] font-bold tracking-widest transition-all shadow-md hover:shadow-lg animate-bounce active:scale-95`}>
+                           <span>繼續默想</span>
+                           <ChevronLeft className="w-5 h-5 -rotate-90" strokeWidth={2.5} />
+                        </button>
                      </div>
                   )}
 
@@ -402,11 +405,18 @@ export default function App() {
                     </div>
                   )}
 
-                   {revealStep === 1 && (
-                     <div className="flex justify-center pt-2 animate-slide-up">
-                        <button onClick={handleRevealNext} className="w-10 h-10 rounded-full bg-white/60 hover:bg-white backdrop-blur-md border border-white/50 shadow-sm hover:shadow-md text-slate-500 flex items-center justify-center transition-all"><ChevronLeft className="w-4 h-4 -rotate-90" strokeWidth={2} /></button>
+                   
+                  {revealStep === 1 && (
+                     <div className="flex justify-center pt-8 pb-4 animate-slide-up">
+                        <button onClick={handleRevealNext} className={`flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} ${emotionStyles[selectedEmotion].accent} font-wenkai text-[16px] font-bold tracking-widest transition-all shadow-md hover:shadow-lg animate-bounce active:scale-95`}>
+                           <span>睇埋神嘅總結</span>
+                           <ChevronLeft className="w-5 h-5 -rotate-90" strokeWidth={2.5} />
+                        </button>
                      </div>
                   )}
+
+
+
                 </div>
 
                 {revealStep >= 2 && (
