@@ -102,7 +102,6 @@ const emotionStyles = {
   },
 };
 
-// 將原本嘅 App component 改名做 SoulStationMain
 function SoulStationMain() {
 
   // Production ========================================================================================
@@ -112,10 +111,10 @@ function SoulStationMain() {
   // =======================================================================================================
 
 // 🚀 CTO 開發捷徑：直接 Skip 走打字，一開網頁直入播片畫面 ==================================
-  //const [appStage, setAppStage] = useState('SEARCHING'); // 👈 將 'INPUT' 改做 'SEARCHING'
+  //const [appStage, setAppStage] = useState('SEARCHING'); 
  // const [userName, setUserName] = useState('測試員'); 
  // const [selectedEmotion, setSelectedEmotion] = useState('平靜與清晰');
-  // ============================================================================================================================================================
+  // =======================================================================================================
 
   const [userInput, setUserInput] = useState('');
   const [currentVerse, setCurrentVerse] = useState(null);
@@ -130,7 +129,6 @@ function SoulStationMain() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
-  // 🛡️ CTO 防護升級：為 localStorage 加入 try...catch 避免 In-App Browser 直接 Crash
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
@@ -146,7 +144,7 @@ function SoulStationMain() {
       const savedName = localStorage.getItem('soulStationUserName');
       if (savedName) setUserName(savedName); 
     } catch (e) {
-      console.warn("無法讀取 localStorage，可能因為無痕模式或應用內瀏覽器限制");
+      console.warn("無法讀取 localStorage");
     }
   }, []);
 
@@ -223,7 +221,6 @@ function SoulStationMain() {
 
   const handleRevealNext = () => { if (revealStep < 3) setRevealStep(prev => prev + 1); };
 
-  // 1. 右上角「分享應用程式」按鈕嘅文案
   const handleShareApp = async () => {
     const appUrl = window.location.href;
     const shareData = {
@@ -239,7 +236,6 @@ function SoulStationMain() {
     }
   };
 
-  // 2. 結果頁面「複製」按鈕嘅文案
   const handleCopy = () => {
     const shareText = `我在「心靈補給站」透過系統配對，找到了一句很有共鳴的經文：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n願神的話語也能成為你今天的力量。✨\n\n尋找專屬經文👉 ${window.location.href}`;
     navigator.clipboard.writeText(shareText).then(() => {
@@ -248,7 +244,6 @@ function SoulStationMain() {
     });
   };
 
-  // 3. 結果頁面「分享這份平靜」按鈕嘅文案
   const handleShare = async () => {
     const shareText = `我在「心靈補給站」透過系統配對，找到了一句很有共鳴的經文：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n願神的話語也能成為你今天的力量。✨`;
     try { await navigator.clipboard.writeText(shareText); } catch (e) {}
@@ -357,7 +352,6 @@ function SoulStationMain() {
               </div>
             )}
 
-            {/* 3. 輸入心聲 (✅ 升級定位：去擬人化，將 Focus 放返喺神的話語) */}
             {appStage === 'INPUT' && (
               <div className="flex-1 flex flex-col justify-center animate-slide-up mt-4 pt-6">
                 <div className="mb-6 px-2">
@@ -401,13 +395,10 @@ function SoulStationMain() {
               </div>
             )}
 
-            {/* 4. 等待 AI (🎥 企業級升級：MP4 無縫循環播放) */}
             {appStage === 'SEARCHING' && (
               <div className="flex-1 flex flex-col items-center justify-center animate-slide-up">
                 <div className="relative mb-6 flex justify-center items-center">
                   <div className="absolute inset-0 bg-[#E5C07B]/10 blur-xl rounded-full"></div>
-                  
-               {/* 👇 完美回歸：用 / 直接指去 public 資料夾 */}
                   <video 
                     src="/searching-bible.mp4" 
                     autoPlay 
@@ -416,7 +407,6 @@ function SoulStationMain() {
                     playsInline
                     className="relative z-10 w-32 h-32 object-cover rounded-2xl shadow-md border-2 border-white/80"
                   />
-                  
                 </div>
                 <p className="text-[#5A5245] font-wenkai text-[18px] tracking-widest animate-pulse mb-2">
                   正在為你查閱經文...
@@ -454,6 +444,19 @@ function SoulStationMain() {
                 </div>
 
                 <div className="space-y-4 mb-8 flex-1">
+                  
+                  {/* 💡 溫柔引導語 */}
+                  {revealStep >= 0 && currentVerse.q1 && (
+                    <div className="text-center mb-6 animate-slide-up">
+                      <p className="text-[13px] font-wenkai tracking-widest text-[#8C8273] opacity-80 flex items-center justify-center gap-2">
+                        <span className="w-8 h-[1px] bg-[#EAE3D9]"></span>
+                        跟隨內心的對話，慢慢沉澱
+                        <span className="w-8 h-[1px] bg-[#EAE3D9]"></span>
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 🟢 修復：Q1/A1 完美區塊 */}
                   {revealStep >= 0 && currentVerse.q1 && (
                     <div className="space-y-6 animate-slide-up">
                       <div className="bg-slate-100/60 backdrop-blur-md rounded-[1.5rem] rounded-tl-sm p-5 shadow-inner border border-slate-200/60 mr-8 sm:mr-12 relative">
@@ -474,7 +477,8 @@ function SoulStationMain() {
                     </div>
                   )}
 
-                 {revealStep === 0 && (
+                  {/* 🟢 修復：繼續默想按鈕 */}
+                  {revealStep === 0 && (
                      <div className="flex justify-center pt-6 pb-2 animate-slide-up">
                         <button onClick={handleRevealNext} className={`flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} ${emotionStyles[selectedEmotion].accent} font-wenkai text-[16px] font-bold tracking-widest transition-all shadow-md hover:shadow-lg animate-bounce active:scale-95`}>
                            <span>繼續默想</span>
@@ -483,6 +487,7 @@ function SoulStationMain() {
                      </div>
                   )}
 
+                  {/* 🟢 Q2/A2 區塊 */}
                   {revealStep >= 1 && currentVerse.q2 && (
                     <div className="space-y-6 animate-slide-up mt-8">
                       <div className="bg-slate-100/60 backdrop-blur-md rounded-[1.5rem] rounded-tl-sm p-5 shadow-inner border border-slate-200/60 mr-8 sm:mr-12 relative">
@@ -494,7 +499,6 @@ function SoulStationMain() {
                           <div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}>
                             <Sparkles className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} />
                           </div>
-                          {/* 👇 完美修復：呢度已經統一改做「經文啟示」啦！ */}
                           <span className={`text-[12px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>
                             經文啟示
                           </span>
@@ -574,7 +578,7 @@ function SoulStationMain() {
         </div>
       </div>
 
-      {/* 🌟 關於我們、條款及免責聲明彈窗 */}
+      {/* 🌟 關於我們、條款及免責聲明彈窗 (已去重覆並加入新聲明) */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-300">
           <div className="bg-[#FDFCF8] border-2 border-[#EAE3D9] w-full max-w-md max-h-[75vh] rounded-[2.5rem] p-8 shadow-2xl flex flex-col justify-between overflow-hidden relative">
@@ -587,18 +591,17 @@ function SoulStationMain() {
               
               <div>
                 <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">💡 關於心靈補給站</h4>
-                {/* 👑 CTO 升級：將「繁忙都市人」改為「每一個渴望平靜的你」 */}
                 <p>「心靈補給站」是一個專為每一個渴望平靜的你預備的安靜角落。我們深信，無論生活多麼喧鬧，每個人都需要一處可以誠實面對內心感受的空間。本程式扮演「電子書僮」的角色，透過 AI 語意配對技術為你尋找適切的聖經金句，作為日常靈修與默想的輔助，願神親自透過祂的話語賜你力量。</p>
+              </div>
+              
+              <div>
+                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">💬 關於默想對話機制</h4>
+                <p>系統中出現的「內心深處的聲音」與「經文啟示」等延伸對話，是 AI 系統根據您輸入的具體處境所生成的「引導式默想」。其目的是為您提供一個消化情緒的過程，幫助您將經文的安慰應用於當下感受之中。請注意，這些對話純屬 AI 的輔助引導，並非神諭，亦非絕對的神學定論。</p>
               </div>
               
               <div>
                 <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">🛠️ 開發團隊</h4>
                 <p>本程式由 <span className="text-[#5A5245] font-bold">心靈補給站</span> 策劃，並由 <a href="https://www.facebook.com/profile.php?id=61590310737697" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] underline underline-offset-2 font-medium">懶人工具駅</a> 團隊傾力研發。我們致力運用科技為日常生活提供溫暖且實用的輔助工具。</p>
-              </div>
-              
-              <div>
-                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">📜 隱私與使用聲明</h4>
-                <p>本程式為輔助經文搜尋及靈修默想之數碼工具，絕不取代個人的禱告、牧養與教會生活。用戶在使用過程中輸入的所有心聲與個人暱稱，均僅存儲於用戶本地設備的瀏覽器緩存（LocalStorage）中，我們承諾絕不收集、記錄或向第三方洩漏您的任何隱私。</p>
               </div>
               
               <div>
