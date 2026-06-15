@@ -215,11 +215,12 @@ function SoulStationMain() {
 
   const handleRevealNext = () => { if (revealStep < 3) setRevealStep(prev => prev + 1); };
 
+  // 1. 右上角「分享應用程式」按鈕嘅文案
   const handleShareApp = async () => {
     const appUrl = window.location.href;
     const shareData = {
       title: '心靈補給站',
-      text: '這是一個專為繁忙都市人預備的安靜角落。來這裡尋找你的平靜吧：',
+      text: '「心靈補給站」是一個為你配對專屬經文的智能小助手。寫下你的心情，讓神的話語成為你此刻的力量：',
       url: appUrl
     };
     if (navigator.share) {
@@ -230,22 +231,24 @@ function SoulStationMain() {
     }
   };
 
+  // 2. 結果頁面「複製」按鈕嘅文案
   const handleCopy = () => {
-    const shareText = `我在「心靈補給站」找到了一份平靜：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n不管今天過得怎樣，這裡總有平靜等你。✨`;
+    const shareText = `我在「心靈補給站」透過系統配對，找到了一句很有共鳴的經文：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n願神的話語也能成為你今天的力量。✨\n\n尋找專屬經文👉 ${window.location.href}`;
     navigator.clipboard.writeText(shareText).then(() => {
       setIsCopied(true); 
       setTimeout(() => setIsCopied(false), 2000); 
     });
   };
 
+  // 3. 結果頁面「分享這份平靜」按鈕嘅文案
   const handleShare = async () => {
-    const shareText = `我在「心靈補給站」找到了一份平靜：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n不管今天過得怎樣，這裡總有平靜等你。✨`;
+    const shareText = `我在「心靈補給站」透過系統配對，找到了一句很有共鳴的經文：\n\n「${currentVerse?.verse}」\n- ${currentVerse?.reference}\n\n願神的話語也能成為你今天的力量。✨`;
     try { await navigator.clipboard.writeText(shareText); } catch (e) {}
     if (navigator.share) {
-      try { await navigator.share({ title: '心靈補給站', text: shareText }); } 
+      try { await navigator.share({ title: '心靈補給站', text: shareText, url: window.location.href }); } 
       catch (err) { console.log('分享取消', err); }
     } else {
-      navigator.clipboard.writeText(shareText);
+      navigator.clipboard.writeText(`${shareText}\n\n尋找專屬經文👉 ${window.location.href}`);
       alert("✨ 經文已經複製！你可以去 WhatsApp 或 IG 貼上分享啦！");
     }
   };
@@ -349,16 +352,31 @@ function SoulStationMain() {
               </div>
             )}
 
+            {/* 3. 輸入心聲 (✅ 升級定位：去擬人化，將 Focus 放返喺神的話語) */}
             {appStage === 'INPUT' && (
               <div className="flex-1 flex flex-col justify-center animate-slide-up mt-4 pt-6">
                 <div className="mb-6 px-2">
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white mb-6 text-sm ${emotionStyles[selectedEmotion].accent} shadow-sm`}>{emotionStyles[selectedEmotion].icon}<span className="font-medium tracking-widest">關於{selectedEmotion}</span></div>
-                  <h2 className="text-[24px] sm:text-[26px] font-wenkai mb-4 text-[#5A5245] leading-[1.6]">{userName}，神就在這裡。<br/>將你嘅感受話畀祂聽吧。</h2>
-                  <p className="text-slate-500 font-light tracking-wide text-[15px] leading-relaxed mt-2">說出你的心聲，神正在聆聽。</p>
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white mb-6 text-sm ${emotionStyles[selectedEmotion].accent} shadow-sm`}>
+                    {emotionStyles[selectedEmotion].icon}
+                    <span className="font-medium tracking-widest">關於{selectedEmotion}</span>
+                  </div>
+                  <h2 className="text-[24px] sm:text-[26px] font-wenkai mb-4 text-[#5A5245] leading-[1.6]">
+                    {userName}，神就在這裡。<br/>將你嘅感受話畀祂聽吧。
+                  </h2>
+                  <p className="text-slate-500 font-light tracking-wide text-[15px] leading-relaxed mt-2">
+                    寫下你此刻的處境或心情，AI系統將透過語意配對技術為你尋找相關的聖經金句。願神親自透過祂的話語，成為你此時此刻的力量。
+                  </p>
                 </div>
                 <div className="relative px-2 z-10">
-                  <textarea className={`w-full bg-white/70 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} rounded-[2rem] p-6 pb-16 font-wenkai text-[17px] leading-[1.8] text-[#5A5245] shadow-xl shadow-black/5 focus:outline-none focus:ring-4 ${emotionStyles[selectedEmotion].focusRing} focus:bg-white transition-all resize-none h-40`} placeholder={emotionStyles[selectedEmotion].placeholder} value={userInput} onChange={(e) => setUserInput(e.target.value)} />
-                  <button onClick={handleSubmitInput} disabled={!userInput.trim()} 
+                  <textarea 
+                    className={`w-full bg-white/70 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} rounded-[2rem] p-6 pb-16 font-wenkai text-[17px] leading-[1.8] text-[#5A5245] shadow-xl shadow-black/5 focus:outline-none focus:ring-4 ${emotionStyles[selectedEmotion].focusRing} focus:bg-white transition-all resize-none h-40`} 
+                    placeholder={emotionStyles[selectedEmotion].placeholder} 
+                    value={userInput} 
+                    onChange={(e) => setUserInput(e.target.value)} 
+                  />
+                  <button 
+                    onClick={handleSubmitInput} 
+                    disabled={!userInput.trim()} 
                     className={`absolute bottom-4 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${userInput.trim() ? 'bg-[#E5C07B] text-white hover:shadow-lg hover:shadow-amber-500/30 active:scale-95' : 'bg-white/80 text-[#D1C9BE] border border-[#EAE3D9] cursor-not-allowed'}`}
                     style={userInput.trim() ? { backgroundImage: 'linear-gradient(to right, #E5C07B, #d4ad64)' } : {}}
                   >
@@ -369,7 +387,9 @@ function SoulStationMain() {
                   <p className="text-[14px] font-wenkai tracking-widest text-[#8C8273] opacity-90 mb-4 ml-1">你可以試下直接點擊：</p>
                   <div className="flex flex-wrap gap-3">
                     {emotionStyles[selectedEmotion].suggestions.map((s, i) => (
-                      <button key={i} onClick={() => setUserInput(s)} className={`group font-wenkai text-[16px] bg-white/80 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} px-5 py-3 rounded-full text-[#5A5245] hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all text-left active:scale-95 shadow-sm flex items-center gap-2.5`}><MessageCircle className={`w-4 h-4 ${emotionStyles[selectedEmotion].accent} opacity-60 group-hover:opacity-100 transition-opacity`} />{s}</button>
+                      <button key={i} onClick={() => setUserInput(s)} className={`group font-wenkai text-[16px] bg-white/80 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} px-5 py-3 rounded-full text-[#5A5245] hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all text-left active:scale-95 shadow-sm flex items-center gap-2.5`}>
+                        <MessageCircle className={`w-4 h-4 ${emotionStyles[selectedEmotion].accent} opacity-60 group-hover:opacity-100 transition-opacity`} />{s}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -528,10 +548,28 @@ function SoulStationMain() {
               <div className="w-12 h-[1px] bg-[#EAE3D9] mt-3"></div>
             </div>
             <div className="overflow-y-auto flex-1 my-2 pr-1 space-y-5 text-[14px] font-wenkai text-[#6E6454] leading-relaxed text-justify">
-              <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">💡 關於心靈補給站</h4><p>「心靈補給站」是一個專為繁忙都市人預備的安靜角落。我們深信，無論生活多麼喧鬧，每個人都需要一處可以卸下防備、誠實面對內心感受的空間。透過結合心靈導引與經文默想，我們陪伴你在每個起伏的時刻，尋回靈魂深處的安穩與力量。</p></div>
-              <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">🛠️ 開發團隊</h4><p>本程式由 <span className="text-[#5A5245] font-bold">心靈補給站</span> 策劃，並由 <a href="https://www.facebook.com/profile.php?id=61590310737697" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] underline underline-offset-2 font-medium">懶人工具駅</a> 團隊傾力研發。我們致力運用科技為日常生活注入溫度與平靜。</p></div>
-              <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">📜 使用條款</h4><p>本程式所載之所有內容僅供用戶作個人心靈輔導、靈修、冥想及良性對話參考之用。用戶在使用過程中輸入的所有心聲與個人暱稱，均僅存儲於用戶本地設備的瀏覽器緩存（LocalStorage）中，我們承諾絕不收集或向第三方洩漏您的隱私。</p></div>
-              <div><h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">⚠️ 免責聲明</h4><p>本程式由 AI 大腦輔助生成對話與回應，所有內容均不代表權威醫療、心理諮商或法律診斷意見。若您正經歷嚴重的心理困擾、抑鬱、焦慮或任何身心危機，本程式無法替代專業的醫療救助。請務必及時尋求專業心理醫生、輔導員或醫療機構的正式協助。</p></div>
+              
+              <div>
+                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">💡 關於心靈補給站</h4>
+                {/* 👑 CTO 升級：將「繁忙都市人」改為「每一個渴望平靜的你」 */}
+                <p>「心靈補給站」是一個專為每一個渴望平靜的你預備的安靜角落。我們深信，無論生活多麼喧鬧，每個人都需要一處可以誠實面對內心感受的空間。本程式扮演「電子書僮」的角色，透過 AI 語意配對技術為你尋找適切的聖經金句，作為日常靈修與默想的輔助，願神親自透過祂的話語賜你力量。</p>
+              </div>
+              
+              <div>
+                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">🛠️ 開發團隊</h4>
+                <p>本程式由 <span className="text-[#5A5245] font-bold">心靈補給站</span> 策劃，並由 <a href="https://www.facebook.com/profile.php?id=61590310737697" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] underline underline-offset-2 font-medium">懶人工具駅</a> 團隊傾力研發。我們致力運用科技為日常生活提供溫暖且實用的輔助工具。</p>
+              </div>
+              
+              <div>
+                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">📜 隱私與使用聲明</h4>
+                <p>本程式為輔助經文搜尋及靈修默想之數碼工具，絕不取代個人的禱告、牧養與教會生活。用戶在使用過程中輸入的所有心聲與個人暱稱，均僅存儲於用戶本地設備的瀏覽器緩存（LocalStorage）中，我們承諾絕不收集、記錄或向第三方洩漏您的任何隱私。</p>
+              </div>
+              
+              <div>
+                <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">⚠️ 免責聲明</h4>
+                <p>本程式的經文配對及回應均由 AI 系統輔助分析與整理，所有內容並不代表權威神學釋經、心理諮商或醫療診斷意見。若您正經歷嚴重的心理困擾、抑鬱、焦慮或任何身心危機，本程式無法替代專業救助。請務必及時尋求教會牧者、專業心理醫生、輔導員或醫療機構的正式協助。</p>
+              </div>
+
             </div>
             <button onClick={() => setShowModal(false)} className="w-full mt-4 bg-[#E5C07B] text-white py-3.5 rounded-[1.5rem] font-wenkai text-[15px] tracking-widest hover:shadow-lg hover:shadow-amber-500/20 transition-all active:scale-95" style={{ backgroundImage: 'linear-gradient(to right, #E5C07B, #d4ad64)' }}>我知道了，返回空間</button>
           </div>
