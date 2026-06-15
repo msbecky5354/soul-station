@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, Component } from 'react';
 import { ChevronLeft, MessageCircle, Heart, Wind, Compass, Coffee, Sparkles, Send, Loader2, User, Copy, Check, Download, Share2, MoreVertical, PlayCircle } from 'lucide-react';
-// import Fuse from 'fuse.js'; // (如果你冇用到 Fuse.js，可以留返 comment 咗佢，免得增加打包體積)
 
-// ==========================================
+
+
+
 // 🛡️ 1. CTO 級防白屏安全氣袋 (Error Boundary)
 // ==========================================
 class ErrorBoundary extends Component {
@@ -106,9 +107,19 @@ const emotionStyles = {
 
 // 將原本嘅 App component 改名做 SoulStationMain
 function SoulStationMain() {
-  const [appStage, setAppStage] = useState('NAME_INPUT');
-  const [userName, setUserName] = useState(''); 
-  const [selectedEmotion, setSelectedEmotion] = useState(null);
+
+  // Production ========================================================================================
+   const [appStage, setAppStage] = useState('NAME_INPUT');
+   const [userName, setUserName] = useState(''); 
+   const [selectedEmotion, setSelectedEmotion] = useState(null);
+  // =======================================================================================================
+
+// 🚀 CTO 開發捷徑：直接 Skip 走打字，一開網頁直入播片畫面 ==================================
+  //const [appStage, setAppStage] = useState('SEARCHING'); // 👈 將 'INPUT' 改做 'SEARCHING'
+ // const [userName, setUserName] = useState('測試員'); 
+ // const [selectedEmotion, setSelectedEmotion] = useState('平靜與清晰');
+  // ============================================================================================================================================================
+
   const [userInput, setUserInput] = useState('');
   const [currentVerse, setCurrentVerse] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -367,7 +378,7 @@ function SoulStationMain() {
                     寫下你此刻的處境或心情，AI系統將透過語意配對技術為你尋找相關的聖經金句。願神親自透過祂的話語，成為你此時此刻的力量。
                   </p>
                 </div>
-                <div className="relative px-2 z-10">
+               <div className="relative px-2 z-10">
                   <textarea 
                     className={`w-full bg-white/70 backdrop-blur-md border-2 ${emotionStyles[selectedEmotion].border} rounded-[2rem] p-6 pb-16 font-wenkai text-[17px] leading-[1.8] text-[#5A5245] shadow-xl shadow-black/5 focus:outline-none focus:ring-4 ${emotionStyles[selectedEmotion].focusRing} focus:bg-white transition-all resize-none h-40`} 
                     placeholder={emotionStyles[selectedEmotion].placeholder} 
@@ -396,13 +407,29 @@ function SoulStationMain() {
               </div>
             )}
 
+            {/* 4. 等待 AI (🎥 企業級升級：MP4 無縫循環播放) */}
             {appStage === 'SEARCHING' && (
               <div className="flex-1 flex flex-col items-center justify-center animate-slide-up">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-white/40 blur-xl rounded-full"></div>
-                  <div className="relative bg-white/80 p-4 rounded-full shadow-sm border border-white"><Loader2 className={`w-8 h-8 animate-spin ${emotionStyles[selectedEmotion].accent}`} /></div>
+                <div className="relative mb-6 flex justify-center items-center">
+                  <div className="absolute inset-0 bg-[#E5C07B]/10 blur-xl rounded-full"></div>
+                  
+               {/* 👇 完美回歸：用 / 直接指去 public 資料夾 */}
+                  <video 
+                    src="/searching-bible.mp4" 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    className="relative z-10 w-32 h-32 object-cover rounded-2xl shadow-md border-2 border-white/80"
+                  />
+                  
                 </div>
-                <p className="text-slate-700 font-tc-serif text-xl tracking-widest animate-pulse mb-3">正在安靜傾聽...</p>
+                <p className="text-[#5A5245] font-wenkai text-[18px] tracking-widest animate-pulse mb-2">
+                  正在為你查閱經文...
+                </p>
+                <p className="text-[#8C8273] font-tc-sans text-[12px] tracking-wider opacity-70">
+                  請稍候片刻
+                </p>
               </div>
             )}
 
