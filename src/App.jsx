@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useMemo, Component } from 'react';
 import { ChevronLeft, MessageCircle, Heart, Wind, Compass, Coffee, Sparkles, Send, Loader2, User, Copy, Check, Download, Share2, MoreVertical, PlayCircle } from 'lucide-react';
 
-
-
-
 // 🛡️ 1. CTO 級防白屏安全氣袋 (Error Boundary)
 // ==========================================
 class ErrorBoundary extends Component {
@@ -284,9 +281,6 @@ function SoulStationMain() {
 
       <div className={`min-h-screen bg-gradient-to-br ${bgStyle} font-tc-sans text-slate-800 flex justify-center transition-colors duration-1000 ease-in-out relative overflow-hidden`}>
         
-        {/* ... (省略中間長長的 UI 代碼，完全保留你原本嘅設計) ... */}
-        {/* 為咗避免洗版，我保留返你原本提供嘅 JSX 結構，無做任何刪減！*/}
-        
         {showDoorAnimation && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#FDFCF8] transition-opacity duration-500">
             <div className="flex flex-col items-center justify-center">
@@ -467,7 +461,14 @@ function SoulStationMain() {
                         <p className="text-[16px] text-slate-600 font-wenkai leading-[1.8]">「{currentVerse.q1}」</p>
                       </div>
                       <div className={`bg-white/95 backdrop-blur-md rounded-[1.5rem] rounded-tr-sm p-6 border-2 ${emotionStyles[selectedEmotion].border} shadow-lg ${emotionStyles[selectedEmotion].glow} ml-8 sm:ml-12 relative`}>
-                        <div className="flex items-center gap-2 mb-3"><div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}><Sparkles className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} /></div><span className={`text-[12px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>神的回應</span></div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}>
+                            <Sparkles className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} />
+                          </div>
+                          <span className={`text-[12px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>
+                            經文啟示
+                          </span>
+                        </div>
                         <p className="text-[16px] leading-[1.8] font-wenkai text-slate-800">{currentVerse.a1}</p>
                       </div>
                     </div>
@@ -489,7 +490,15 @@ function SoulStationMain() {
                         <p className="text-[16px] text-slate-600 font-wenkai leading-[1.8]">「{currentVerse.q2}」</p>
                       </div>
                       <div className={`bg-white/95 backdrop-blur-md rounded-[1.5rem] rounded-tr-sm p-6 border-2 ${emotionStyles[selectedEmotion].border} shadow-lg ${emotionStyles[selectedEmotion].glow} ml-8 sm:ml-12 relative`}>
-                        <div className="flex items-center gap-2 mb-3"><div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}><Sparkles className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} /></div><span className={`text-[12px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>神的回應</span></div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}>
+                            <Sparkles className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} />
+                          </div>
+                          {/* 👇 完美修復：呢度已經統一改做「經文啟示」啦！ */}
+                          <span className={`text-[12px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>
+                            經文啟示
+                          </span>
+                        </div>
                         <p className="text-[16px] leading-[1.8] font-wenkai text-slate-800">{currentVerse.a2}</p>
                       </div>
                     </div>
