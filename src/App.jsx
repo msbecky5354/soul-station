@@ -360,8 +360,8 @@ function SoulStationMain() {
                     {emotionStyles[selectedEmotion].icon}
                     <span className="font-medium tracking-widest">關於{selectedEmotion}</span>
                   </div>
-                  <h2 className="text-[24px] sm:text-[26px] font-wenkai mb-4 text-[#5A5245] leading-[1.6]">
-                    {userName}，神就在這裡。<br/>將你嘅感受話畀祂聽吧。
+                 <h2 className="text-[24px] sm:text-[26px] font-wenkai mb-4 text-[#5A5245] leading-[1.6]">
+                    {userName}，神的話語帶有力量。<br/>寫下感受，讓經文陪伴你吧。
                   </h2>
                   <p className="text-slate-500 font-light tracking-wide text-[15px] leading-relaxed mt-2">
                     寫下你此刻的處境或心情，AI系統將透過語意配對技術為你尋找相關的聖經金句。願神親自透過祂的話語，成為你此時此刻的力量。
