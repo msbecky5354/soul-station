@@ -221,8 +221,7 @@
             selector.disabled = true;
 
             try {
-               // ❌ 錯誤寫法 (抓到的是 HTML 網頁)
-// const response = await fetch('https://github.com/msbecky5354/soul-station/blob/main/data/demo_data.json');
+            
 
 // ✅ 正確寫法 (跨域直連 GitHub 原生 JSON 檔案)
 const response = await fetch('https://raw.githubusercontent.com/msbecky5354/soul-station/main/data/demo_data.json');
