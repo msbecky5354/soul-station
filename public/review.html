@@ -326,39 +326,7 @@
             }
         }
 
-        // === 🕵️‍♂️ 隱形獨立訪客追蹤引擎 (Silent Unique Visitor Tracker) ===
-        async function trackUniqueVisit() {
-            // 1. 檢查訪客設備是否已經有「入場券」
-            let visitorId = localStorage.getItem('oasis_demo_visitor');
-
-            if (!visitorId) {
-                // 2. 如果沒有，代表是全新真實訪客！發配一張全新 UUID 入場券
-                visitorId = crypto.randomUUID ? crypto.randomUUID() : 'visitor-' + Date.now();
-                localStorage.setItem('oasis_demo_visitor', visitorId);
-
-                try {
-                    // 3. 靜靜雞將呢個新訪客紀錄寫入 Supabase 底層
-                    await supabaseClient.from('demo_visits').insert([
-                        { 
-                            visitor_id: visitorId,
-                            user_agent: navigator.userAgent // 順便記錄佢用咩設備/瀏覽器
-                        }
-                    ]);
-                    console.log("✅ [System] 新訪客已紀錄入庫。");
-                } catch (error) {
-                    console.error("Tracker Error:", error);
-                }
-            } else {
-                // 如果已經有入場券，就算佢狂撳 F5，系統都會無視，唔會增加資料庫負擔
-                console.log("ℹ️ [System] 老朋友回訪，略過計數。");
-            }
-        }
-
-        // 確保網頁一打開就立刻執行追蹤與撈取資料
-        document.addEventListener('DOMContentLoaded', () => {
-            trackUniqueVisit(); // 啟動隱形追蹤
-            fetchLogs();        // 撈取展示資料
-        });
+       
 
         document.addEventListener('DOMContentLoaded', fetchLogs);
     </script>
