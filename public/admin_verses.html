@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oasis Pro - Admin Verses Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        input::-webkit-calendar-picker-indicator {
+            opacity: 100;
+            cursor: pointer;
+            color: #64748b;
+        }
+        input[type="search"]::-webkit-search-cancel-button {
+            -webkit-appearance: searchfield-cancel-button;
+            cursor: pointer;
+            margin-left: 6px;
+            filter: grayscale(100%) opacity(50%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800">
+
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-database text-indigo-600 text-2xl"></i>
+                <h1 class="text-xl font-bold text-slate-900 flex items-center flex-wrap gap-2">
+                    劇本與經文總庫 
+                </h1>
+            </div>
+            
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="resetFilters()" class="text-sm bg-rose-50 hover:bg-rose-100 text-rose-600 py-2 px-4 rounded-lg transition-colors font-medium flex items-center gap-2" title="清除所有篩選條件">
+                    <i class="fas fa-eraser"></i> 重設條件
+                </button>
+                <button onclick="initFetch()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-4 rounded-lg transition-colors font-medium flex items-center gap-2" title="重新從資料庫載入">
+                    <i class="fas fa-sync-alt"></i> 重新載入
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">全域搜尋 (General Search)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-slate-400"></i>
+                        </div>
+                        <input type="search" id="filter-search" placeholder="搜尋對白、總結或提示詞..." 
+                            class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">排序 (Sort by)</label>
+                    <select id="filter-sort" class="block w-full pl-3 pr-10 py-2 text-base border border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg">
+                        <option value="desc">ID 由新到舊 (Newest)</option>
+                        <option value="asc">ID 由舊到新 (Oldest)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">媒體狀態 (Media)</label>
+                    <select id="filter-media" class="block w-full pl-3 pr-10 py-2 text-base border border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg">
+                        <option value="all">顯示全部 (All)</option>
+                        <option value="has_yt">📺 有 YouTube 連結</option>
+                        <option value="no_yt">🚫 無 YouTube 連結</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mt-4 pt-4 border-t border-slate-100">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">主情緒 (Emotion)</label>
+                    <input type="search" id="filter-emotion" list="emotion-list" placeholder="下拉或輸入..." 
+                        class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors cursor-pointer">
+                    <datalist id="emotion-list"></datalist>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">AI 情感 (Sentiment)</label>
+                    <input type="search" id="filter-sentiment" list="sentiment-list" placeholder="下拉或輸入..." 
+                        class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors cursor-pointer">
+                    <datalist id="sentiment-list"></datalist>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-blue-500 uppercase tracking-wider mb-2">新/舊約 (Testament)</label>
+                    <select id="filter-testament" class="block w-full px-3 py-2 text-sm border border-blue-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-blue-50/30 cursor-pointer transition-colors">
+                        <option value="all">全本聖經 (All)</option>
+                        <option value="old">📜 舊約 (Old Testament)</option>
+                        <option value="new">✝️ 新約 (New Testament)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-blue-500 uppercase tracking-wider mb-2">書卷 (Book)</label>
+                    <input type="search" id="filter-book" list="book-list" placeholder="例: 箴言..." 
+                        class="block w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors cursor-pointer bg-blue-50/30">
+                    <datalist id="book-list"></datalist>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-blue-500 uppercase tracking-wider mb-2">章節 (Chapter)</label>
+                    <input type="search" id="filter-chapter" list="chapter-list" placeholder="請先選擇書卷..." 
+                        class="block w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors cursor-pointer bg-blue-50/30">
+                    <datalist id="chapter-list"></datalist>
+                </div>
+
+                <div class="flex flex-col justify-end">
+                    <label class="block text-xs font-bold text-indigo-500 uppercase tracking-wider mb-2">資料筆數 (Records)</label>
+                    <div id="stats-box" class="flex items-center justify-center w-full px-3 border border-indigo-200 bg-indigo-50 text-indigo-700 rounded-lg font-bold text-sm shadow-sm transition-colors duration-300 h-[38px]">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>載入中...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="loading" class="text-center py-20 text-slate-400">
+            <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-indigo-500"></i>
+            <p class="text-lg font-medium">正在連線至資料庫...</p>
+        </div>
+
+        <div id="empty-state" class="hidden text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
+            <i class="fas fa-folder-open text-4xl text-slate-300 mb-4"></i>
+            <p class="text-slate-500 font-medium text-lg">找不到符合條件的劇本</p>
+            <button onclick="resetFilters()" class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium text-sm">清除所有條件</button>
+        </div>
+
+        <div id="verses-container" class="space-y-6 hidden">
+        </div>
+
+    </main>
+
+    <script>
+        // ⚠️ 注意：前端直接使用 anon key 是 Supabase 的正常設計，但請確保資料庫的 RLS (Row Level Security) 已經正確設定，限制只能 SELECT。
+        const SUPABASE_URL = "https://oylemsbvdcxqawmrufxt.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bGVtc2J2ZGN4cWF3bXJ1Znh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjUxMjksImV4cCI6MjA5NjE0MTEyOX0.NVRYaimrhd3Y8ELAAYCUe_xHu3prMneXduxy8LRpX_s"; 
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let globalData = []; 
+        let bibleMap = {}; 
+
+        const OT_BOOKS = ["創世記", "出埃及記", "利未記", "民數記", "申命記", "約書亞記", "士師記", "路得記", "撒母耳記上", "撒母耳記下", "列王紀上", "列王紀下", "歷代志上", "歷代志下", "以斯拉記", "尼希米記", "以斯帖記", "約伯記", "詩篇", "箴言", "傳道書", "雅歌", "以賽亞書", "耶利米書", "耶利米哀歌", "以西結書", "但以理書", "何西阿書", "約珥書", "阿摩司書", "俄巴底亞書", "約拿書", "彌迦書", "那鴻書", "哈巴谷書", "西番雅書", "哈該書", "撒迦利亞書", "瑪拉基書"];
+        const NT_BOOKS = ["馬太福音", "馬可福音", "路加福音", "約翰福音", "使徒行傳", "羅馬書", "哥林多前書", "哥林多後書", "加拉太書", "以弗所書", "腓立比書", "歌羅西書", "帖撒羅尼迦前書", "帖撒羅尼迦後書", "提摩太前書", "提摩太後書", "提多書", "腓利門書", "希伯來書", "雅各書", "彼得前書", "彼得後書", "約翰一書", "約翰二書", "約翰三書", "猶大書", "啟示錄"];
+
+        function getTestament(bookName) {
+            if (!bookName) return '';
+            const name = bookName.trim();
+            if (OT_BOOKS.includes(name)) return 'old';
+            if (NT_BOOKS.includes(name)) return 'new';
+            if (OT_BOOKS.some(b => b.startsWith(name) || name.startsWith(b))) return 'old';
+            if (NT_BOOKS.some(b => b.startsWith(name) || name.startsWith(b))) return 'new';
+            return 'unknown';
+        }
+
+        function populateDatalists() {
+            const emotionsSet = new Set();
+            const sentimentsSet = new Set();
+            bibleMap = {}; 
+
+            globalData.forEach(verse => {
+                const emotion = verse.primary_emotion || verse.primiary_emotion;
+                if (emotion && emotion.trim() !== '') emotionsSet.add(emotion.trim());
+
+                const sentiment = verse.ai_sentiment || verse.ai_senitement;
+                if (sentiment && sentiment.trim() !== '') sentimentsSet.add(sentiment.trim());
+
+                const ref = verse.reference;
+                if (ref && ref.trim() !== '') {
+                    const parts = ref.trim().split(' ');
+                    const book = parts[0];
+                    const chapter = parts.length > 1 ? parts.slice(1).join(' ') : '';
+                    
+                    if (!bibleMap[book]) bibleMap[book] = new Set();
+                    if (chapter) bibleMap[book].add(chapter);
+                }
+            });
+
+            document.getElementById('emotion-list').innerHTML = [...emotionsSet].sort().map(val => `<option value="${val}">`).join('');
+            document.getElementById('sentiment-list').innerHTML = [...sentimentsSet].sort().map(val => `<option value="${val}">`).join('');
+            
+            updateBookList(); 
+        }
+
+        function updateBookList() {
+            const testamentFilter = document.getElementById('filter-testament').value;
+            const bookList = document.getElementById('book-list');
+            const availableBooks = Object.keys(bibleMap).sort();
+            
+            let filteredBooks = availableBooks;
+            if (testamentFilter === 'old') {
+                filteredBooks = availableBooks.filter(b => getTestament(b) === 'old');
+            } else if (testamentFilter === 'new') {
+                filteredBooks = availableBooks.filter(b => getTestament(b) === 'new');
+            }
+            
+            bookList.innerHTML = filteredBooks.map(b => `<option value="${b}">`).join('');
+            
+            const currentBook = document.getElementById('filter-book').value;
+            if (currentBook && testamentFilter !== 'all' && getTestament(currentBook) !== testamentFilter) {
+                document.getElementById('filter-book').value = '';
+                document.getElementById('filter-chapter').value = '';
+                document.getElementById('chapter-list').innerHTML = '';
+            }
+        }
+
+        document.getElementById('filter-testament').addEventListener('change', (e) => {
+            updateBookList();
+            applyFilters();
+        });
+
+        document.getElementById('filter-book').addEventListener('input', (e) => {
+            const selectedBook = e.target.value.trim();
+            const chapterInput = document.getElementById('filter-chapter');
+            const chapterList = document.getElementById('chapter-list');
+            
+            chapterList.innerHTML = '';
+            chapterInput.value = '';
+            
+            if (bibleMap[selectedBook]) {
+                chapterInput.placeholder = "下拉選擇章節...";
+                const chapters = [...bibleMap[selectedBook]].sort();
+                chapterList.innerHTML = chapters.map(c => `<option value="${c}">`).join('');
+            } else {
+                chapterInput.placeholder = "請先選擇書卷...";
+            }
+            
+            const testamentType = getTestament(selectedBook);
+            if (testamentType === 'old' || testamentType === 'new') {
+                document.getElementById('filter-testament').value = testamentType;
+            }
+
+            applyFilters();
+        });
+
+        async function initFetch() {
+            const container = document.getElementById('verses-container');
+            const loading = document.getElementById('loading');
+            const empty = document.getElementById('empty-state');
+            
+            container.classList.add('hidden');
+            empty.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('daily_verses')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+                globalData = data;
+                
+                populateDatalists(); 
+                applyFilters();      
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                loading.innerHTML = `<div class="text-red-500"><i class="fas fa-exclamation-triangle text-3xl mb-2"></i><p>資料庫連線失敗，請檢查 Console。</p></div>`;
+            }
+        }
+
+        function applyFilters() {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('verses-container');
+            const empty = document.getElementById('empty-state');
+            
+            const searchTerm = document.getElementById('filter-search').value.toLowerCase();
+            const sortOrder = document.getElementById('filter-sort').value;
+            const mediaStatus = document.getElementById('filter-media').value;
+            
+            const searchEmotion = document.getElementById('filter-emotion').value.toLowerCase();
+            const searchSentiment = document.getElementById('filter-sentiment').value.toLowerCase();
+            const searchTestament = document.getElementById('filter-testament').value;
+            const searchBook = document.getElementById('filter-book').value.toLowerCase();
+            const searchChapter = document.getElementById('filter-chapter').value.toLowerCase();
+
+            let filteredData = globalData.filter(verse => {
+                
+                const combinedText = `
+                    ${verse.q1 || ''} ${verse.a1 || ''} 
+                    ${verse.q2 || ''} ${verse.a2 || ''} 
+                    ${verse.conclusion || ''} ${verse.visual || ''}
+                `.toLowerCase();
+                const matchesSearch = combinedText.includes(searchTerm);
+                
+                let matchesMedia = true;
+                if (mediaStatus === 'has_yt') matchesMedia = verse.youtube_url && verse.youtube_url.trim() !== '';
+                if (mediaStatus === 'no_yt') matchesMedia = !verse.youtube_url || verse.youtube_url.trim() === '';
+
+                const valEmotion = (verse.primary_emotion || verse.primiary_emotion || '').toLowerCase();
+                const matchesEmotion = searchEmotion === '' || valEmotion.includes(searchEmotion);
+
+                const valSentiment = (verse.ai_sentiment || verse.ai_senitement || '').toLowerCase();
+                const matchesSentiment = searchSentiment === '' || valSentiment.includes(searchSentiment);
+
+                const ref = (verse.reference || '').toLowerCase();
+                const refParts = ref.split(' ');
+                const vBook = refParts[0] || '';
+                const vChapter = refParts.length > 1 ? refParts.slice(1).join(' ') : '';
+                
+                const matchesBook = searchBook === '' || vBook.includes(searchBook);
+                const matchesChapter = searchChapter === '' || vChapter.includes(searchChapter);
+
+                let matchesTestament = true;
+                if (searchTestament !== 'all') {
+                    matchesTestament = (getTestament(vBook) === searchTestament);
+                }
+
+                return matchesSearch && matchesMedia && matchesEmotion && matchesSentiment && matchesBook && matchesChapter && matchesTestament;
+            });
+
+            if (sortOrder === 'asc') {
+                filteredData.sort((a, b) => a.id - b.id);
+            } else {
+                filteredData.sort((a, b) => b.id - a.id);
+            }
+
+            loading.classList.add('hidden');
+            
+            const statsBox = document.getElementById('stats-box');
+            if (filteredData.length === globalData.length) {
+                statsBox.className = "flex items-center justify-center w-full px-3 border border-indigo-200 bg-indigo-50 text-indigo-700 rounded-lg font-bold text-sm shadow-sm transition-colors duration-300 h-[38px]";
+                statsBox.innerHTML = `<i class="fas fa-database mr-2 opacity-70"></i>共 ${globalData.length} 筆`;
+            } else {
+                statsBox.className = "flex items-center justify-center w-full px-3 border border-amber-300 bg-amber-100 text-amber-800 rounded-lg font-bold text-sm shadow-sm transition-colors duration-300 h-[38px]";
+                statsBox.innerHTML = `<i class="fas fa-filter mr-2 opacity-70"></i>篩選: ${filteredData.length} / ${globalData.length}`;
+            }
+
+            if (filteredData.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+            } else {
+                empty.classList.add('hidden');
+                container.classList.remove('hidden');
+                renderCards(filteredData);
+            }
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById('verses-container');
+            container.innerHTML = ''; 
+
+            data.forEach(verse => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden";
+                
+                let ytBadge = verse.youtube_url 
+                    ? `<a href="${verse.youtube_url}" target="_blank" class="inline-flex items-center gap-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1 rounded-full text-xs font-bold transition-colors"><i class="fab fa-youtube text-sm"></i> 觀看影片</a>`
+                    : `<span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-400 px-3 py-1 rounded-full text-xs font-medium"><i class="fas fa-video-slash"></i> 無影片</span>`;
+
+                const displayEmotion = verse.primary_emotion || verse.primiary_emotion;
+                const emotionBadge = displayEmotion ? `<span class="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-heartbeat mr-1"></i> ${displayEmotion}</span>` : '';
+                
+                const displaySentiment = verse.ai_sentiment || verse.ai_senitement;
+                const sentimentBadge = displaySentiment ? `<span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-robot mr-1"></i> ${displaySentiment}</span>` : '';
+
+                const tagData = verse.mood_tags || verse.tags || verse.tag;
+                let tagsBadge = '';
+                if (Array.isArray(tagData)) {
+                    tagsBadge = tagData.map(t => `<span class="bg-teal-100 text-teal-700 text-xs font-bold px-2.5 py-1 rounded-full border border-teal-200 shadow-sm whitespace-nowrap"><i class="fas fa-tag mr-1 opacity-70"></i> ${String(t).trim()}</span>`).join(' ');
+                } else if (typeof tagData === 'string' && tagData.trim() !== '') {
+                    tagsBadge = tagData.split(',').map(t => `<span class="bg-teal-100 text-teal-700 text-xs font-bold px-2.5 py-1 rounded-full border border-teal-200 shadow-sm whitespace-nowrap"><i class="fas fa-tag mr-1 opacity-70"></i> ${t.trim()}</span>`).join(' ');
+                }
+
+                card.innerHTML = `
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <span class="bg-slate-800 text-white text-xs font-mono font-bold px-2.5 py-1 rounded shadow-sm">ID: ${verse.id}</span>
+                            ${emotionBadge}
+                            ${sentimentBadge}
+                            ${tagsBadge}
+                        </div>
+                        <div>${ytBadge}</div>
+                    </div>
+
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            
+                            <div class="space-y-4">
+                                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-2"><i class="fas fa-comments mr-2"></i>劇本對白 (Script)</h3>
+                                
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                    <p class="text-xs font-bold text-slate-500 mb-1">Q1 (用戶開場)</p>
+                                    <p class="text-slate-800 text-sm leading-relaxed">${verse.q1 || '<span class="text-slate-400 italic">無資料</span>'}</p>
+                                </div>
+                                
+                                <div class="bg-indigo-50/50 p-4 rounded-lg border-l-4 border-l-indigo-400">
+                                    <p class="text-xs font-bold text-indigo-500 mb-1">A1 (牧者回應)</p>
+                                    <p class="text-indigo-900 text-sm leading-relaxed">${verse.a1 || '<span class="text-slate-400 italic">無資料</span>'}</p>
+                                </div>
+
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                    <p class="text-xs font-bold text-slate-500 mb-1">Q2 (進一步反思)</p>
+                                    <p class="text-slate-800 text-sm leading-relaxed">${verse.q2 || '<span class="text-slate-400 italic">無資料</span>'}</p>
+                                </div>
+
+                                <div class="bg-indigo-50/50 p-4 rounded-lg border-l-4 border-l-indigo-400">
+                                    <p class="text-xs font-bold text-indigo-500 mb-1">A2 (同行回應)</p>
+                                    <p class="text-indigo-900 text-sm leading-relaxed">${verse.a2 || '<span class="text-slate-400 italic">無資料</span>'}</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-2"><i class="fas fa-book-bible text-blue-400 mr-2"></i>經文出處與原文 (Reference & Verse)</h3>
+                                    <div class="bg-blue-50/50 p-5 rounded-lg border border-blue-100 flex flex-col gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-bookmark text-blue-300 text-xl"></i>
+                                            <p class="text-blue-900 font-bold text-lg">${verse.reference || '<span class="text-blue-400/50 italic font-normal text-base">無出處 (No Reference)</span>'}</p>
+                                        </div>
+                                        <div class="pl-8">
+                                            <p class="text-blue-800 text-base leading-relaxed border-l-2 border-blue-300 pl-4 py-1 font-medium">
+                                                「${verse.verse || '<span class="text-blue-400/50 italic font-normal">無經文內容</span>'}」
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-2"><i class="fas fa-lightbulb text-amber-400 mr-2"></i>核心洞察 (Core)</h3>
+                                    <div class="bg-amber-50 p-5 rounded-lg border border-amber-100/50">
+                                        <p class="text-xs font-bold text-amber-600 mb-2">Conclusion (賦予力量的總結)</p>
+                                        <p class="text-amber-900 font-medium text-sm leading-relaxed">${verse.conclusion || '<span class="text-amber-700/50 italic">無資料</span>'}</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-2"><i class="fas fa-image text-emerald-400 mr-2"></i>視覺生成 (Visual)</h3>
+                                    <div class="bg-slate-800 p-5 rounded-lg border border-slate-700">
+                                        <p class="text-xs font-bold text-emerald-400 mb-2">Midjourney / AI 提示詞 (Prompt)</p>
+                                        <p class="text-slate-300 font-mono text-sm leading-relaxed break-words">${verse.visual || '<span class="text-slate-500 italic">No visual prompt generated</span>'}</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-sort').value = 'desc';
+            document.getElementById('filter-media').value = 'all';
+            
+            document.getElementById('filter-emotion').value = '';
+            document.getElementById('filter-sentiment').value = '';
+            document.getElementById('filter-testament').value = 'all';
+            document.getElementById('filter-book').value = '';
+            document.getElementById('filter-chapter').value = '';
+            
+            document.getElementById('chapter-list').innerHTML = ''; 
+            document.getElementById('filter-chapter').placeholder = "請先選擇書卷...";
+
+            updateBookList(); 
+            applyFilters();   
+        }
+
+        document.getElementById('filter-search').addEventListener('input', applyFilters);
+        document.getElementById('filter-sort').addEventListener('change', applyFilters);
+        document.getElementById('filter-media').addEventListener('change', applyFilters);
+        
+        document.getElementById('filter-emotion').addEventListener('input', applyFilters);
+        document.getElementById('filter-sentiment').addEventListener('input', applyFilters);
+        document.getElementById('filter-chapter').addEventListener('input', applyFilters);
+
+        document.addEventListener('DOMContentLoaded', initFetch);
+    </script>
+</body>
+</html>
