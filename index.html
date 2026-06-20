@@ -6,8 +6,9 @@
     <title data-i18n="appName">貼地通 - 儀表板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="lang.js?v=15"></script>
-    <script src="config.js?v=15"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script src="lang.js?v=16"></script>
+    <script src="config.js?v=16"></script>
     <script src="header.js"></script>
     <script src="footer.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -60,10 +61,10 @@
         });
 
         // ==========================================
-        // 模塊 1：強效縮網址與無縫分享系統
+        // 模塊 1：LZ-String 壓縮與縮網址系統
         // ==========================================
         
-        function shortenUrlFallback(longUrl) {
+        function shortenUrl(longUrl) {
             return new Promise((resolve) => {
                 const callbackName = 'isgd_callback_' + Math.round(100000 * Math.random());
                 window[callbackName] = function(data) {
@@ -74,25 +75,11 @@
                 };
                 const script = document.createElement('script');
                 script.id = callbackName;
+                // 使用 JSONP 完美避開 CORS
                 script.src = `https://is.gd/create.php?format=jsonp&url=${encodeURIComponent(longUrl)}&callback=${callbackName}`;
                 script.onerror = () => { delete window[callbackName]; script.remove(); resolve(longUrl); };
                 document.body.appendChild(script);
             });
-        }
-
-        async function shortenUrl(longUrl) {
-            try {
-                // 優先使用支援特長 URL 嘅 POST API
-                const res = await fetch('https://spoo.me/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
-                    body: new URLSearchParams({ url: longUrl })
-                });
-                const data = await res.json();
-                if (data.short_url) return data.short_url;
-            } catch(e) {}
-            // 如果失敗，退回 JSONP 方法
-            return await shortenUrlFallback(longUrl);
         }
 
         async function shareGroup(event, groupName) {
@@ -105,21 +92,24 @@
             btn.disabled = true; btn.classList.add('opacity-70');
 
             try {
-                // ✅ 極限數據壓縮：飛走無謂 Key，大幅縮減 JSON 長度
                 const exportData = routes.map(r => ({
                     t: r.transitType, r: r.route, rk: r.route_key||'', s: r.stop_id,
                     dk: r.dest_key||'', dn: r.dest_name||'', sk: r.stop_key||'', sn: r.stop_name||'',
                     a: r.alias||'', c: r.color||'', u: r.apiUrl||''
                 }));
                 const payload = { g: groupName, d: exportData };
-                const base64Str = btoa(encodeURIComponent(JSON.stringify(payload)));
-                const longLink = window.location.origin + window.location.pathname + '?import=' + base64Str;
                 
+                // ✅ 終極殺招：使用 LZ-String 進行極限壓縮，並生成 URL Safe 嘅字串
+                const compressedData = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
+                
+                // 將參數改為 ?i= 進一步縮短
+                const longLink = window.location.origin + window.location.pathname + '?i=' + compressedData;
+                
+                // 經過極限瘦身，is.gd 百分百可以食得落
                 const shortLink = await shortenUrl(longLink);
                 const shareText = `快啲加入我嘅出門儀表板【${getTranslation(groupName, groupName)}】！\n\n${shortLink}`;
                 const shareTitle = getTranslation('appName', '貼地通') + ' - ' + getTranslation(groupName, groupName);
 
-                // ✅ 智能判斷：手機用原生 Share，電腦直接彈 WhatsApp Web
                 if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
                     await navigator.share({ title: shareTitle, text: `快啲加入我嘅出門儀表板【${getTranslation(groupName, groupName)}】！\n\n`, url: shortLink });
                 } else {
@@ -136,14 +126,20 @@
 
         function checkImportDeepLink() {
             const urlParams = new URLSearchParams(window.location.search);
-            const importData = urlParams.get('import');
+            const importData = urlParams.get('i') || urlParams.get('import');
+            
             if (importData) {
                 try {
-                    const payload = JSON.parse(decodeURIComponent(atob(importData)));
-                    let newRoutes = [];
+                    let payload;
+                    // ✅ 智能判定：新版壓縮定係舊版 Base64
+                    if (urlParams.has('i')) {
+                        payload = JSON.parse(LZString.decompressFromEncodedURIComponent(importData));
+                    } else {
+                        payload = JSON.parse(decodeURIComponent(atob(importData)));
+                    }
 
+                    let newRoutes = [];
                     if (payload.g && payload.d) {
-                        // ✅ 解開極限壓縮版數據
                         newRoutes = payload.d.map(min => ({
                             id: 'item_' + Date.now() + Math.floor(Math.random() * 10000),
                             group: payload.g, transitType: min.t, route: min.r, route_key: min.rk, stop_id: min.s,
@@ -151,8 +147,7 @@
                             alias: min.a, isCustomAlias: (min.a !== ''), color: min.c, apiUrl: min.u, time: 'ALL_DAY'
                         }));
                     } else if (Array.isArray(payload)) {
-                        // 兼容舊版長 Link
-                        newRoutes = payload;
+                        newRoutes = payload; // 兼容超舊版本
                     }
 
                     if (newRoutes.length > 0) {
