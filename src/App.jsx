@@ -601,7 +601,7 @@ function SoulStationMain() {
               
               <div>
                 <h4 className="text-[#5A5245] font-bold text-[15px] mb-1 tracking-wider">🛠️ 開發團隊</h4>
-                <p>本程式由 <span className="text-[#5A5245] font-bold">心靈補給站</span> 策劃，並由 <a href="https://www.facebook.com/profile.php?id=61590310737697" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] underline underline-offset-2 font-medium">懶人工具駅</a> 團隊傾力研發。我們致力運用科技為日常生活提供溫暖且實用的輔助工具。</p>
+                <p>本程式由 <span className="text-[#5A5245] font-bold">心靈補給站</span> 策劃，並由 <a href="https://lazytoolsstation.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] underline underline-offset-2 font-medium">懶人工具駅</a> 團隊傾力研發。我們致力運用科技為日常生活提供溫暖且實用的輔助工具。</p>
               </div>
               
               <div>
