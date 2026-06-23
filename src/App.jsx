@@ -571,7 +571,7 @@ function SoulStationMain() {
               關於我們、條款及免責聲明
             </button>
             <p className="text-[11px] font-tc-sans tracking-widest text-[#A39A8E]">
-              © 2026 心靈補給站 <span className="mx-1 text-[#EAE3D9]">|</span> 開發團隊: <a href="https://www.facebook.com/profile.php?id=61590310737697" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] hover:text-[#d4ad64] transition-colors font-medium underline underline-offset-2 decoration-[#E5C07B]/30">懶人工具駅</a>
+              © 2026 心靈補給站 <span className="mx-1 text-[#EAE3D9]">|</span> 開發團隊: <a href="https://lazytoolsstation.vercel.app" target="_blank" rel="noopener noreferrer" className="text-[#E5C07B] hover:text-[#d4ad64] transition-colors font-medium underline underline-offset-2 decoration-[#E5C07B]/30">懶人工具駅</a>
             </p>
           </div>
 
