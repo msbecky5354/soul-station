@@ -331,6 +331,35 @@
     }
   },
   {
+    "id": 122,
+    "created_at": "2026-06-24T22:58:19.241363+00:00",
+    "user_name": "Mscar",
+    "emotion": "陪伴與被愛",
+    "user_input": "呢排真係覺得自己好孤單。",
+    "total_tokens": 0,
+    "ai_feedback": "【⚡ 系統極速快取】用家點擊了預設選項，系統免除 AI 思考，直接派發完美經文！",
+    "ai_prayer": null,
+    "verse_reference": "詩篇 68:6：「神叫孤獨的有家，使被囚的出來享福；惟有悖逆的住在乾燥之地。」",
+    "script": {
+      "id": "083d8b4c-032c-4315-91c2-d84f316cc452",
+      "reference": "詩篇 68:6",
+      "verse": "神叫孤獨的有家，使被囚的出來享福；惟有悖逆的住在乾燥之地。",
+      "mood_tags": "#孤單想有人陪 #孤獨的有家 #被囚出監 #得享福樂 #神作你的家 #family #freedom #belonging",
+      "q1": "成日覺得好孤單，好想有人陪。",
+      "a1": "神話過佢叫孤獨嘅有家，你嘅空虛祂會填補。",
+      "q2": "我仲可以點樣獲得幸福？",
+      "a2": "行喺神嘅道上，順服祂，福樂自自然然會嚟。",
+      "conclusion": "喺神入面，你永遠有家。",
+      "visual": "充滿溫暖光影嘅溫馨客廳",
+      "youtube_url": "https://www.youtube.com/watch?v=eDvo9oELeQU",
+      "created_at": "2026-06-12T13:35:08.753203+00:00",
+      "primary_emotion": "陪伴與被愛",
+      "auditor_review_date": "2026-06-15T17:17:16.544029+00:00",
+      "ai_sentiment": "🔴 負向",
+      "ai_prayer": null
+    }
+  },
+  {
     "id": 108,
     "created_at": "2026-06-18T05:56:52.048795+00:00",
     "user_name": "Becky",
