@@ -181,7 +181,7 @@ function SoulStationMain() {
       setIsTransitioning(false);
 
       try {
-        const response = await fetch('https://reasonable-mongoose.pikapod.net/webhook/soul-station-search', {
+        const response = await fetch('https://reasonable-mongoose.pikapod.net/webhook/soul-station-searchv1', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userName, emotion: selectedEmotion, userInput })
