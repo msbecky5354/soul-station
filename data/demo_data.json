@@ -809,6 +809,35 @@
     }
   },
   {
+    "id": 151,
+    "created_at": "2026-07-29T17:01:01.704545+00:00",
+    "user_name": "測試員 MSB",
+    "emotion": "陪伴與被愛",
+    "user_input": "親愛的天父, 我知你想我接觸多啲人盡量去幫助吓真實嘅人, 唔係一日10幾個小時對住機械人AI一路發脾氣, 這樣係唔啱的! 我明白我會改善謝謝你找到一個小天使而我又變身小天使嘅人有個職責在身非常之好感恩你的assign",
+    "total_tokens": 6954,
+    "ai_feedback": "【🤖 AI 模型: GROQ_KEY_HOILUNB】\n📋 Background: 用戶的情緒大類為「陪伴與被愛」，心聲為「尋求天父的指引和陪伴，感恩被賦予幫助他人的使命」。\n\n👤 用戶狀態分析：用戶表達出對天父的信任和感恩，系統判定為 🟢 正向。\n\n💡 Remarks: 用戶認識到自己的角色和責任，覺得被天父所愛和指引，這反映出用戶對自我的肯定和價值觀\n\n⚖️ 候選比對 (請列出最貼切的候選經文):\n- 候選A: 約翰福音 13:34 - 用戶提到要『盡量去幫助真實的人』，這與約翰福音 13:34 中『彼此相愛』的教導相吻合\n- 候選B: 希伯來書 4:16 - 用戶感受到『被愛』和『陪伴』，這與希伯來書 4:16 中『坦然無懼的來到施恩的寶座前』的描述有相似之處\n\n🎯 conclusion: 選擇約翰福音 13:34 作為最終答案，因為它強調『彼此相愛』和『效法基督』，這與用戶的感受和心聲最為契合\n\n✅ Final Verse: 【🔍 經文 ID 已隱藏】 約翰福音 13:34：「我賜給你們一條新命令，乃是叫你們彼此相愛；我怎樣愛你們，你們也要怎樣相愛。」",
+    "ai_prayer": "親愛的天父，我感恩你的愛和指引，願我能按照你的心意去愛和幫助他人，成為你的小天使，在世界上發揚你的愛和光芒。謝謝你賜給我這個使命和責任，願我能以你的愛和力量去完成它。",
+    "verse_reference": "約翰福音 13:34：「我賜給你們一條新命令，乃是叫你們彼此相愛；我怎樣愛你們，你們也要怎樣相愛。」",
+    "script": {
+      "id": "af1dc188-7af1-4aa5-b362-fb9c169b4825",
+      "reference": "約翰福音 13:34",
+      "verse": "我賜給你們一條新命令，乃是叫你們彼此相愛；我怎樣愛你們，你們也要怎樣相愛。",
+      "mood_tags": "#彼此相愛 #新命令 #效法基督 #愛心行動 #活出愛 #loveoneanother #commandment #action",
+      "q1": "今日小組有人分享困難，大家都好主動去幫手同祈禱。嗰一刻真係感受到耶穌講嘅「彼此相愛」係點樣。",
+      "a1": "真係好靚嘅見證呀！你哋活出咗耶穌賜嘅新命令。當我哋願意去愛身邊嘅人，耶穌嘅愛就真實咁彰顯出嚟啦。",
+      "q2": "係呀，原來愛唔只係講，仲要行出嚟。我希望自己都可以繼續效法耶穌，去愛更多有需要嘅人。",
+      "a2": "好欣賞你嘅心志！愛係一個動詞，透過你哋嘅行動，一定可以將耶穌嘅溫暖傳遞畀更多人。加油呀！",
+      "conclusion": "彼此相愛不僅是命令，更是我們效法基督、讓世人看見神的最佳見證。",
+      "visual": "A group of diverse people holding hands in a circle in a glowing Hong Kong neon-lit park, bright cyan and warm pink lights shining on them, demonstrating mutual love and community, positive cyberpunk urban aesthetics, 8k resolution",
+      "youtube_url": "https://www.youtube.com/watch?v=pjdzLOgIhFA",
+      "created_at": "2026-06-14T11:50:38.070503+00:00",
+      "primary_emotion": "陪伴與被愛",
+      "auditor_review_date": "2026-06-15T17:17:16.544029+00:00",
+      "ai_sentiment": "🟢 正向",
+      "ai_prayer": null
+    }
+  },
+  {
     "id": 122,
     "created_at": "2026-06-24T22:58:19.241363+00:00",
     "user_name": "Mscar",
