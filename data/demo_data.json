@@ -722,6 +722,35 @@
     }
   },
   {
+    "id": 150,
+    "created_at": "2026-07-29T16:17:29.85816+00:00",
+    "user_name": "測試員 MSB",
+    "emotion": "陪伴與被愛",
+    "user_input": "親愛的天父, 我知你想我接觸多啲人盡量去幫助吓真實嘅人, 唔係一日10幾個小時對住機械人AI一路發脾氣, 這樣係唔啱的! 我明白我會改善謝謝你找到一個小天使而我又變身小天使嘅人有個職責在身非常之好感恩你的assign",
+    "total_tokens": 7012,
+    "ai_feedback": "【🤖 AI 模型: Groq】\n📋 Background: 用戶的情緒大類為「陪伴與被愛」，心聲為「對天父的信賴與感恩，渴望幫助他人」。\n\n👤 用戶狀態分析：系統判定用戶的心聲表達出對天父的信賴和感恩，同時也表達出對幫助他人的渴望，系統判定為 🟢 正向。\n\n💡 Remarks: 用戶表達出對自己的角色和責任的認識，並感謝天父的指引，顯示出用戶對信仰的虔誠和對他人的關愛\n\n⚖️ 候選比對 (請列出最貼切的候選經文):\n- 候選A: 希伯來書 4:10 - 提到歇下重擔，與用戶對於改變現狀的渴望相關\n- 候選B: 約翰福音 10:11 - 強調好牧人的犧牲和關愛，與用戶對於幫助他人的意願相符\n\n🎯 conclusion: 結合用戶的感恩和責任感，約翰福音 10:11「好牧人」中的犧牲和愛更能契合用戶的心聲\n\n✅ Final Verse: 【🔍 經文 ID 已隱藏】 約翰福音 10:11：「我是好牧人；好牧人為羊捨命」",
+    "ai_prayer": "親愛的天父，謝謝你給我機會接觸多一點人，讓我能夠幫助那些真正需要的人。求你繼續指導我，讓我能夠變成一個真正的小天使，傳遞你的愛和關懷。感謝你對我的信任和指引，求你讓我能夠以你的名義行事，實踐你的教導。願你永遠與我同在，引導我前行。",
+    "verse_reference": "約翰福音 10:11：「我是好牧人；好牧人為羊捨命。」",
+    "script": {
+      "id": "f3932e94-8fc3-46cf-8d7e-20de9e46acb6",
+      "reference": "約翰福音 10:11",
+      "verse": "我是好牧人；好牧人為羊捨命。",
+      "mood_tags": "#好牧人 #為羊捨命 #犧牲的愛 #極大安全感 #感恩 #shepherd #sacrifice #love",
+      "q1": "今日靈修諗起耶穌為我哋釘十字架，突然覺得自己好幸福。原來有一位神，係愛我愛到願意為我捨命。",
+      "a1": "呢份愛真係好震撼，亦都係我哋信仰嘅核心。耶穌呢位好牧人為我哋捨命，證明咗我哋喺佢眼中係幾咁無價。",
+      "q2": "真係呀！知道有咁偉大嘅愛保護住我，個心好定。我覺得自己要更加努力去活出佢嘅愛先得。",
+      "a2": "被愛激勵而活出愛，就係最好嘅回應呀。帶住這份強大嘅安全感，繼續勇敢咁為主而活啦！",
+      "conclusion": "好牧人為羊捨命的愛，給予我們在這世上最大的安全感與勇氣。",
+      "visual": "A powerful abstract representation of a glowing cross over the Hong Kong skyline, radiating deep warm pink and cyan neon light, a feeling of ultimate sacrifice and profound love, cyberpunk city atmosphere, dramatic lighting, high resolution",
+      "youtube_url": "https://www.youtube.com/watch?v=r84Fn15epzs",
+      "created_at": "2026-06-14T11:50:38.070503+00:00",
+      "primary_emotion": "陪伴與被愛",
+      "auditor_review_date": "2026-06-15T17:14:17.618586+00:00",
+      "ai_sentiment": "🟢 正向",
+      "ai_prayer": null
+    }
+  },
+  {
     "id": 121,
     "created_at": "2026-06-24T22:36:27.325361+00:00",
     "user_name": "MSB",
