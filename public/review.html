@@ -239,7 +239,7 @@
         // 🚀 步驟 2：加上時間戳 (?t=...) 及 no-store，強制破除 GitHub 5 分鐘 CDN 快取
         const cacheBuster = `?t=${Date.now()}`;
         const response = await fetch(
-            `https://msbecky5354.github.io/soul-station/data/demo_data.json${cacheBuster}`,
+            ..data/demo_data.json${cacheBuster}`,
             { cache: 'no-store' }
         );
         
