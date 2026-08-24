@@ -234,11 +234,12 @@
         }).catch(() => {});
 
         // 2. 透過 GitHub Pages 正式網址讀取，加上時間戳破除快取
-        const cacheBuster = `?t=${Date.now()}`;
-        const response = await fetch(
-            `https://msbecky5354.github.io/soul-station/data/demo_data.json${cacheBuster}`,
-            { cache: 'no-store' }
-        );
+      // 替換 fetchLogs 內的 URL
+const cacheBuster = `?t=${Date.now()}`;
+const response = await fetch(
+    `https://cdn.jsdelivr.net/gh/msbecky5354/soul-station@main/data/demo_data.json${cacheBuster}`,
+    { cache: 'no-store' }
+);
         
         if (!response.ok) throw new Error('網絡連線失敗或找不到檔案');
         
