@@ -237,11 +237,11 @@
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         // 🚀 步驟 2：直接讀取本地相對路徑，並以 ?t= 強制破除瀏覽器快取
-        const cacheBuster = `?t=${Date.now()}`;
-        const response = await fetch(`./data/demo_data.json${cacheBuster}`, {
-            cache: 'no-store'
-        });
-        
+     // 使用絕對根目錄路徑
+const cacheBuster = `?t=${Date.now()}`;
+const response = await fetch(`/data/demo_data.json${cacheBuster}`, {
+    cache: 'no-store'
+});
         if (!response.ok) throw new Error('網絡連線失敗或找不到檔案');
         
         const rawData = await response.json();
