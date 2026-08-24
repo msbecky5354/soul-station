@@ -194,8 +194,10 @@ function SoulStationMain() {
 let verseForEmotion = data.verse_data;
 
 if (verseForEmotion) {
-    verseForEmotion.ai_prayer = data[0]?.ready_for_supabase?.ai_prayer || "";
+    verseForEmotion.ai_prayer = data.ai_prayer || "";
 }
+
+console.log("CHECK PRAYER:", verseForEmotion.ai_prayer);
 
         if (!verseForEmotion) {
            verseForEmotion = fallbackVerse;
@@ -529,6 +531,22 @@ if (verseForEmotion) {
                       <Sparkles className="w-5 h-5 text-[#E5C07B] absolute left-1/2 -top-6 -translate-x-1/2 opacity-60" />
                       <p className="font-wenkai text-[19px] text-[#5A5245] leading-[1.8] px-4">{currentVerse.conclusion}</p>
                     </div>
+
+                    {currentVerse.ai_prayer && (
+  <div className="mt-8 animate-slide-up">
+    <div className="text-center mb-4 flex items-center justify-center gap-2">
+      <span className="w-8 h-[1px] bg-[#EAE3D9]"></span>
+      <span className="text-[13px] font-wenkai tracking-widest text-[#8C8273] opacity-80">🙏 為你預備的禱文</span>
+      <span className="w-8 h-[1px] bg-[#EAE3D9]"></span>
+    </div>
+    <div className={`bg-white/95 backdrop-blur-md rounded-[2rem] p-7 border-2 ${emotionStyles[selectedEmotion].border} shadow-lg ${emotionStyles[selectedEmotion].glow} relative`}>
+      <p className="text-[16px] leading-[2] font-wenkai text-slate-700 text-justify">{currentVerse.ai_prayer}</p>
+      <p className="text-[12px] font-wenkai tracking-widest text-[#8C8273] opacity-70 mt-4 text-center">—— 你可以親自這樣祈禱</p>
+    </div>
+  </div>
+)}
+
+
                     
                     <div className="flex flex-col gap-3 mt-6">
                       <div className="flex gap-3">
