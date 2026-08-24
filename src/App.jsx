@@ -193,6 +193,11 @@ function SoulStationMain() {
         const data = await response.json();
         let verseForEmotion = data.verse_data;
 
+        // 👑 關鍵修復：將外面嘅 ai_prayer 強制合併入去 verse_data 裡面
+        if (verseForEmotion) {
+            verseForEmotion.ai_prayer = data.ai_prayer || data.ready_for_supabase?.ai_prayer;
+        }
+
         if (!verseForEmotion) {
            verseForEmotion = fallbackVerse;
            verseForEmotion.isFallback = true;
