@@ -191,12 +191,18 @@ function SoulStationMain() {
         if (!response.ok) throw new Error('AI 連線錯誤');
 
         const data = await response.json();
-        let verseForEmotion = data.verse_data;
 
-        // 👑 關鍵修復：將外面嘅 ai_prayer 強制合併入去 verse_data 裡面
-        if (verseForEmotion) {
-            verseForEmotion.ai_prayer = data.ai_prayer || data.ready_for_supabase?.ai_prayer;
-        }
+console.log("🔥 AI RESPONSE:", JSON.stringify(data,null,2));
+
+const aiData = data[0]?.ready_for_supabase || data.ready_for_supabase || data;
+
+let verseForEmotion = {
+    ...aiData,
+    reference: aiData.verse_reference,
+    verse: aiData.verse_reference,
+    ai_prayer: aiData.ai_prayer
+};
+
 
         if (!verseForEmotion) {
            verseForEmotion = fallbackVerse;
