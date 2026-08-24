@@ -13,7 +13,9 @@
       --primary: #3b82f6;
       --primary-hover: #2563eb;
       --border: #e2e8f0;
-      --success: #10b981;
+      --tag-bg: #fdf2f8;
+      --tag-text: #db2777;
+      --tag-border: #fbcfe8;
     }
 
     * {
@@ -52,6 +54,64 @@
     header p {
       font-size: 0.875rem;
       color: var(--muted);
+    }
+
+    .meta-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (min-width: 600px) {
+      .meta-bar {
+        grid-template-columns: 1fr 1fr auto;
+        align-items: end;
+      }
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .input-group input {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .rule-tag {
+      grid-column: 1 / -1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background-color: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--tag-text);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 6px;
+      width: fit-content;
     }
 
     .grid {
@@ -130,6 +190,7 @@
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .btn-primary {
@@ -175,8 +236,26 @@
 <div class="container">
   <header>
     <h1>中翻英雙欄快速轉換器</h1>
-    <p>貼上文字後自動翻譯（亦可按鍵手動翻譯及複製）</p>
+    <p>貼上文字後自動翻譯，輸出已 Hardcode 強制校正為女性代名詞 (She / Her)</p>
   </header>
+
+  <!-- Meta Info -->
+  <div class="meta-bar">
+    <div class="input-group">
+      <label for="userName">您的名稱 (Name)</label>
+      <input type="text" id="userName" value="Becky" placeholder="請輸入名稱">
+    </div>
+    <div class="input-group">
+      <label for="timestamp">時間戳記 (Timestamp)</label>
+      <input type="text" id="timestamp" placeholder="YYYY.MM.DD HH:mm">
+    </div>
+    <div>
+      <button class="btn-outline" onclick="updateCurrentTime()" style="height: 38px;">更新為現在時間</button>
+    </div>
+    <div class="rule-tag">
+      🔒 已鎖定規則：所有第三人稱自動校正為女性 (he/him/his ➔ she/her/herself)
+    </div>
+  </div>
 
   <!-- Section 1 -->
   <div class="card">
@@ -185,8 +264,8 @@
       <span id="status1" class="badge">等待輸入</span>
     </div>
     <div class="grid">
-      <textarea id="input1" placeholder="在此貼上第一段（如：心聲）..."></textarea>
-      <div id="output1" class="output-box" placeholder="翻譯結果..."></div>
+      <textarea id="input1" placeholder="在此貼上心聲內容..."></textarea>
+      <div id="output1" class="output-box"></div>
     </div>
     <div class="actions">
       <button class="btn-outline" onclick="copyText('output1')">複製心聲英文</button>
@@ -200,8 +279,8 @@
       <span id="status2" class="badge">等待輸入</span>
     </div>
     <div class="grid">
-      <textarea id="input2" placeholder="在此貼上第二段（如：禱文）..."></textarea>
-      <div id="output2" class="output-box" placeholder="翻譯結果..."></div>
+      <textarea id="input2" placeholder="在此貼上禱文內容..."></textarea>
+      <div id="output2" class="output-box"></div>
     </div>
     <div class="actions">
       <button class="btn-outline" onclick="copyText('output2')">複製禱文英文</button>
@@ -217,12 +296,58 @@
         <button class="btn-primary" onclick="copyCombined()">一鍵複製完整內容</button>
       </div>
     </div>
-    <div id="outputCombined" class="output-box" style="min-height: 140px;"></div>
+    <div id="outputCombined" class="output-box" style="min-height: 160px;"></div>
   </div>
 </div>
 
 <script>
   let debounceTimer1, debounceTimer2;
+
+  function formatTimestamp(date = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    const y = date.getFullYear();
+    const m = pad(date.getMonth() + 1);
+    const d = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const mm = pad(date.getMinutes());
+    return `${y}.${m}.${d} ${hh}:${mm}`;
+  }
+
+  function updateCurrentTime() {
+    document.getElementById('timestamp').value = formatTimestamp();
+    updateCombined();
+  }
+
+  // Hardcode 修正代名詞為女性
+  function enforceFemalePronouns(text) {
+    if (!text) return '';
+    return text
+      .replace(/\bhimself\b/gi, (m) => m[0] === 'H' ? 'Herself' : 'herself')
+      .replace(/\bhe\b/g, 'she')
+      .replace(/\bHe\b/g, 'She')
+      .replace(/\bhim\b/g, 'her')
+      .replace(/\bHim\b/g, 'Her')
+      .replace(/\bhis\b/g, 'her')
+      .replace(/\bHis\b/g, 'Her');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    updateCurrentTime();
+    const savedName = localStorage.getItem('translator_user_name');
+    if (savedName) {
+      document.getElementById('userName').value = savedName;
+    }
+    updateCombined();
+  });
+
+  document.getElementById('userName').addEventListener('input', (e) => {
+    localStorage.setItem('translator_user_name', e.target.value.trim());
+    updateCombined();
+  });
+
+  document.getElementById('timestamp').addEventListener('input', () => {
+    updateCombined();
+  });
 
   document.getElementById('input1').addEventListener('input', () => {
     clearTimeout(debounceTimer1);
@@ -240,7 +365,9 @@
     try {
       const res = await fetch(url);
       const data = await res.json();
-      return data[0].map(item => item[0]).join('');
+      const rawTranslation = data[0].map(item => item[0]).join('');
+      // 自動跑 Hardcode 代名詞轉換邏輯
+      return enforceFemalePronouns(rawTranslation);
     } catch (err) {
       console.error(err);
       return '翻譯失敗，請檢查網絡連線。';
@@ -268,19 +395,24 @@
   }
 
   function updateCombined() {
+    const name = document.getElementById('userName').value.trim() || 'Becky';
+    const timestamp = document.getElementById('timestamp').value.trim();
     const out1 = document.getElementById('output1').innerText.trim();
     const out2 = document.getElementById('output2').innerText.trim();
     const combinedEl = document.getElementById('outputCombined');
 
-    let result = '';
+    let parts = [];
+    if (timestamp) {
+      parts.push(timestamp);
+    }
     if (out1) {
-      result += `**Heartfelt Thought:**\n${out1}\n\n`;
+      parts.push(`**${name}'s Heartfelt Thought:**\n\n${out1}`);
     }
     if (out2) {
-      result += `**Prayer:**\n${out2}`;
+      parts.push(`**Prayer:**\n\n${out2}`);
     }
 
-    combinedEl.innerText = result.trim();
+    combinedEl.innerText = parts.join('\n\n');
   }
 
   function copyText(elementId) {
