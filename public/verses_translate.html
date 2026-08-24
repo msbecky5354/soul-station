@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>雙欄中翻英工具 (Chinese to English Translator)</title>
+  <title>雙欄中翻英工具 (Mobile Ready)</title>
   <style>
     :root {
       --bg: #f4f6f9;
@@ -28,7 +28,7 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding: 24px 16px;
+      padding: 16px 12px;
       display: flex;
       justify-content: center;
     }
@@ -38,7 +38,7 @@
       max-width: 860px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     header {
@@ -46,13 +46,13 @@
     }
 
     header h1 {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 700;
       margin-bottom: 4px;
     }
 
     header p {
-      font-size: 0.875rem;
+      font-size: 0.825rem;
       color: var(--muted);
     }
 
@@ -60,10 +60,10 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
@@ -77,20 +77,20 @@
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .input-group label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text);
     }
 
     .input-group input {
-      padding: 8px 12px;
+      padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 6px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
       transition: border-color 0.2s;
     }
@@ -104,11 +104,11 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 6px 10px;
       background-color: var(--tag-bg);
       border: 1px solid var(--tag-border);
       color: var(--tag-text);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 500;
       border-radius: 6px;
       width: fit-content;
@@ -117,7 +117,7 @@
     .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     @media (min-width: 768px) {
@@ -130,15 +130,15 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .card-title {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       display: flex;
       justify-content: space-between;
@@ -147,11 +147,11 @@
 
     textarea {
       width: 100%;
-      min-height: 120px;
+      min-height: 110px;
       padding: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.5;
       resize: vertical;
       outline: none;
@@ -164,12 +164,12 @@
 
     .output-box {
       width: 100%;
-      min-height: 120px;
+      min-height: 110px;
       padding: 10px;
       background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.5;
       color: #334155;
       white-space: pre-wrap;
@@ -178,14 +178,14 @@
 
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: flex-end;
     }
 
     button {
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 6px;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
       border: 1px solid transparent;
@@ -216,14 +216,14 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .badge {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       background: #e2e8f0;
       color: var(--muted);
       padding: 2px 6px;
@@ -236,7 +236,7 @@
 <div class="container">
   <header>
     <h1>中翻英雙欄快速轉換器</h1>
-    <p>貼上文字後自動翻譯，輸出已 Hardcode 強制校正為女性代名詞 (She / Her)</p>
+    <p>貼上文字自動翻譯・強制女性代名詞 (She / Her)</p>
   </header>
 
   <!-- Meta Info -->
@@ -250,7 +250,7 @@
       <input type="text" id="timestamp" placeholder="YYYY.MM.DD HH:mm">
     </div>
     <div>
-      <button class="btn-outline" onclick="updateCurrentTime()" style="height: 38px;">更新為現在時間</button>
+      <button class="btn-outline" onclick="updateCurrentTime()" style="height: 36px; width: 100%;">更新為現在時間</button>
     </div>
     <div class="rule-tag">
       🔒 已鎖定規則：所有第三人稱自動校正為女性 (he/him/his ➔ she/her/herself)
@@ -296,7 +296,7 @@
         <button class="btn-primary" onclick="copyCombined()">一鍵複製完整內容</button>
       </div>
     </div>
-    <div id="outputCombined" class="output-box" style="min-height: 160px;"></div>
+    <div id="outputCombined" class="output-box" style="min-height: 150px;"></div>
   </div>
 </div>
 
@@ -318,7 +318,6 @@
     updateCombined();
   }
 
-  // Hardcode 修正代名詞為女性
   function enforceFemalePronouns(text) {
     if (!text) return '';
     return text
@@ -359,19 +358,50 @@
     debounceTimer2 = setTimeout(() => handleTranslate(2), 600);
   });
 
+  // 多重翻譯代理機制，徹底解決手機瀏覽器 CORS 問題
   async function translateText(text) {
     if (!text.trim()) return '';
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+
+    const googleEndpoint = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+
+    // 方案 1: 直接請求
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const rawTranslation = data[0].map(item => item[0]).join('');
-      // 自動跑 Hardcode 代名詞轉換邏輯
-      return enforceFemalePronouns(rawTranslation);
-    } catch (err) {
-      console.error(err);
-      return '翻譯失敗，請檢查網絡連線。';
+      const res = await fetch(googleEndpoint);
+      if (res.ok) {
+        const data = await res.json();
+        return enforceFemalePronouns(data[0].map(item => item[0]).join(''));
+      }
+    } catch (e) {
+      // 靜默轉入方案 2
     }
+
+    // 方案 2: CORS Proxy 轉發 (解決手機跨域限制)
+    try {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleEndpoint)}`;
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        const data = await res.json();
+        return enforceFemalePronouns(data[0].map(item => item[0]).join(''));
+      }
+    } catch (e) {
+      // 靜默轉入方案 3
+    }
+
+    // 方案 3: MyMemory API 備用
+    try {
+      const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|en`;
+      const res = await fetch(myMemoryUrl);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.responseData && data.responseData.translatedText) {
+          return enforceFemalePronouns(data.responseData.translatedText);
+        }
+      }
+    } catch (e) {
+      console.error('All translation routes failed:', e);
+    }
+
+    return '翻譯失敗，請檢查網絡或稍後再試。';
   }
 
   async function handleTranslate(section) {
@@ -390,7 +420,7 @@
     statusEl.innerText = '翻譯中...';
     const translated = await translateText(text);
     outputEl.innerText = translated;
-    statusEl.innerText = '已翻譯';
+    statusEl.innerText = translated.includes('失敗') ? '錯誤' : '已翻譯';
     updateCombined();
   }
 
@@ -405,10 +435,10 @@
     if (timestamp) {
       parts.push(timestamp);
     }
-    if (out1) {
+    if (out1 && !out1.includes('翻譯失敗')) {
       parts.push(`**${name}'s Heartfelt Thought:**\n\n${out1}`);
     }
-    if (out2) {
+    if (out2 && !out2.includes('翻譯失敗')) {
       parts.push(`**Prayer:**\n\n${out2}`);
     }
 
@@ -417,7 +447,7 @@
 
   function copyText(elementId) {
     const text = document.getElementById(elementId).innerText;
-    if (!text) return;
+    if (!text || text.includes('翻譯失敗')) return;
     navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
   }
 
