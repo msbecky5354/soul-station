@@ -193,9 +193,8 @@ function SoulStationMain() {
 
 let verseForEmotion = data.verse_data;
 
-// 合併 AI prayer，不改其他經文/Q&A 結構
-if (verseForEmotion && data[0]?.ready_for_supabase?.ai_prayer) {
-    verseForEmotion.ai_prayer = data[0].ready_for_supabase.ai_prayer;
+if (verseForEmotion) {
+    verseForEmotion.ai_prayer = data[0]?.ready_for_supabase?.ai_prayer || "";
 }
 
         if (!verseForEmotion) {
