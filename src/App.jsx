@@ -58,7 +58,7 @@ class ErrorBoundary extends Component {
 // 🧘 2. 心靈補給站 主程式 (Soul Station Main)
 // ==========================================
 
-// 備用經文庫 (當連線不穩定時的溫柔備案)
+
 const fallbackVerse = {
   id: "fallback-001",
   primary_emotion: "陪伴與被愛",
@@ -70,6 +70,7 @@ const fallbackVerse = {
   q2: "我依家應該點做？",
   a2: "你可以嘗試稍後再重新載入頁面。喺等待嘅時候，不妨深呼吸，俾自己幾分鐘安靜嘅時間。",
   conclusion: "感謝你參與我哋嘅 BETA 測試，陪我哋一齊成長。",
+  prayer: "慈愛嘅天父，雖然此刻面對住少少未知同等待，但我知道祢一直喺我身邊。求祢賜我平靜安穩嘅心，等我可以喺祢嘅愛入面休息。阿們。", // ✨ 新增預設禱文
   youtube_url: null,
   isFallback: true
 };
@@ -524,6 +525,24 @@ function SoulStationMain() {
                       <Sparkles className="w-5 h-5 text-[#E5C07B] absolute left-1/2 -top-6 -translate-x-1/2 opacity-60" />
                       <p className="font-wenkai text-[19px] text-[#5A5245] leading-[1.8] px-4">{currentVerse.conclusion}</p>
                     </div>
+                    
+                    {/* ✨ 新增：專屬禱告文區塊 ✨ */}
+                    {currentVerse.prayer && (
+                      <div className={`bg-white/90 backdrop-blur-md rounded-[1.5rem] p-6 sm:p-7 border-2 ${emotionStyles[selectedEmotion].border} shadow-lg ${emotionStyles[selectedEmotion].glow} mb-8 relative mx-1`}>
+                        <div className="absolute top-3 right-4 text-4xl opacity-10">🙏</div>
+                        <div className="flex items-center gap-2 mb-4 relative z-10">
+                          <div className={`bg-gradient-to-br ${emotionStyles[selectedEmotion].gradient} p-1.5 rounded-full border ${emotionStyles[selectedEmotion].border}`}>
+                            <Heart className={`w-3.5 h-3.5 ${emotionStyles[selectedEmotion].accent}`} />
+                          </div>
+                          <span className={`text-[13px] font-bold tracking-widest uppercase ${emotionStyles[selectedEmotion].accent}`}>
+                            專屬禱告文 (親自跟住讀)
+                          </span>
+                        </div>
+                        <p className="text-[17px] leading-[2.2] font-wenkai text-slate-800 relative z-10 text-justify whitespace-pre-wrap">
+                          {currentVerse.prayer}
+                        </p>
+                      </div>
+                    )}
                     
                     <div className="flex flex-col gap-3 mt-6">
                       <div className="flex gap-3">
