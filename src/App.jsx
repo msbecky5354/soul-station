@@ -527,7 +527,7 @@ function SoulStationMain() {
                     </div>
                     
                     {/* ✨ 新增：專屬禱告文區塊 ✨ */}
-                    {currentVerse.prayer && (
+                    {(currentVerse.prayer || currentVerse.ai_prayer) && (
                       <div className={`bg-white/90 backdrop-blur-md rounded-[1.5rem] p-6 sm:p-7 border-2 ${emotionStyles[selectedEmotion].border} shadow-lg ${emotionStyles[selectedEmotion].glow} mb-8 relative mx-1`}>
                         <div className="absolute top-3 right-4 text-4xl opacity-10">🙏</div>
                         <div className="flex items-center gap-2 mb-4 relative z-10">
@@ -539,7 +539,7 @@ function SoulStationMain() {
                           </span>
                         </div>
                         <p className="text-[17px] leading-[2.2] font-wenkai text-slate-800 relative z-10 text-justify whitespace-pre-wrap">
-                          {currentVerse.prayer}
+                          {currentVerse.prayer || currentVerse.ai_prayer}
                         </p>
                       </div>
                     )}
