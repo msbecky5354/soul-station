@@ -237,7 +237,7 @@
       // 替換 fetchLogs 內的 URL
 const cacheBuster = `?t=${Date.now()}`;
 const response = await fetch(
-    `https://cdn.jsdelivr.net/gh/msbecky5354/soul-station@main/data/demo_data.json${cacheBuster}`,
+    `https://msbecky5354.github.io/JSON/data/demo_data.json${cacheBuster}`,
     { cache: 'no-store' }
 );
         
@@ -260,28 +260,49 @@ const response = await fetch(
 }
 
         function populateDropdown() {
-            const selector = document.getElementById('log-selector');
-            selector.innerHTML = '<option value="">-- 請選擇一筆紀錄 (Select a log) --</option>';
+    const selector = document.getElementById('log-selector');
+    selector.innerHTML = '<option value="">-- 請選擇一筆紀錄 (Select a log) --</option>';
 
-            globalLogs.forEach(log => {
-                const date = new Date(log.created_at);
-                const timeStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-                const option = document.createElement('option');
-                option.value = log.id; 
-                option.textContent = `[${timeStr}] ${log.user_name || '未知'} - ${log.emotion || '無標籤'}`;
-                selector.appendChild(option);
-            });
+    // ═══ 近 30 日過濾 ═══
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const recentLogs = globalLogs.filter(log => new Date(log.created_at).getTime() >= cutoff);
 
-            selector.addEventListener('change', (e) => {
-                if(!e.target.value) {
-                    document.getElementById('empty-state').classList.remove('hidden');
-                    document.getElementById('content-grid').classList.add('hidden');
-                    return;
-                }
-                const selectedLog = globalLogs.find(l => l.id == e.target.value);
-                if(selectedLog) renderDashboard(selectedLog);
-            });
+    // ═══ HK 時區格式化 ═══
+    const fmtHK = (iso) => {
+        const parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Hong_Kong',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).formatToParts(new Date(iso));
+        const get = t => parts.find(x => x.type === t).value;
+        return `${get('month')}/${get('day')} ${get('hour')}:${get('minute')}`;
+    };
+
+    // ═══ 渲染 Dropdown（顯示 ID + HK 時間）═══
+    recentLogs.forEach(log => {
+        const timeStr = fmtHK(log.created_at);
+        const option = document.createElement('option');
+        option.value = log.id;
+        option.textContent = `#${log.id}｜${timeStr}｜${log.user_name || '未知'}｜${log.emotion || '無標籤'}`;
+        selector.appendChild(option);
+    });
+
+    // ═══ 更新計數器 ═══
+    document.querySelector('label[for="log-selector"]').innerHTML = `紀錄 (Logs)：<strong>${recentLogs.length}</strong> 筆（近 30 日）`;
+
+    selector.addEventListener('change', (e) => {
+        if(!e.target.value) {
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('content-grid').classList.add('hidden');
+            return;
         }
+        const selectedLog = globalLogs.find(l => l.id == e.target.value);
+        if(selectedLog) renderDashboard(selectedLog);
+    });
+}
 
         async function renderDashboard(log) {
             document.getElementById('empty-state').classList.add('hidden');
@@ -349,6 +370,9 @@ const response = await fetch(
             }
         }
 
+
+
+        
        
 
         document.addEventListener('DOMContentLoaded', fetchLogs);
