@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雙欄中翻英工具 (Chinese to English Translator)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --border: #e2e8f0;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .output-box {
+      width: 100%;
+      min-height: 120px;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #334155;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+    }
+
+    .combined-result {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      background: #e2e8f0;
+      color: var(--muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>中翻英雙欄快速轉換器</h1>
+    <p>貼上文字後自動翻譯（亦可按鍵手動翻譯及複製）</p>
+  </header>
+
+  <!-- Section 1 -->
+  <div class="card">
+    <div class="card-title">
+      <span>1. 心聲 (Heartfelt Thought)</span>
+      <span id="status1" class="badge">等待輸入</span>
+    </div>
+    <div class="grid">
+      <textarea id="input1" placeholder="在此貼上第一段（如：心聲）..."></textarea>
+      <div id="output1" class="output-box" placeholder="翻譯結果..."></div>
+    </div>
+    <div class="actions">
+      <button class="btn-outline" onclick="copyText('output1')">複製心聲英文</button>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="card">
+    <div class="card-title">
+      <span>2. 禱文 (Prayer)</span>
+      <span id="status2" class="badge">等待輸入</span>
+    </div>
+    <div class="grid">
+      <textarea id="input2" placeholder="在此貼上第二段（如：禱文）..."></textarea>
+      <div id="output2" class="output-box" placeholder="翻譯結果..."></div>
+    </div>
+    <div class="actions">
+      <button class="btn-outline" onclick="copyText('output2')">複製禱文英文</button>
+    </div>
+  </div>
+
+  <!-- Combined Output -->
+  <div class="combined-result">
+    <div class="card-title">
+      <span>合併格式化結果 (Combined Output)</span>
+      <div class="actions">
+        <button class="btn-outline" onclick="clearAll()">全部清空</button>
+        <button class="btn-primary" onclick="copyCombined()">一鍵複製完整內容</button>
+      </div>
+    </div>
+    <div id="outputCombined" class="output-box" style="min-height: 140px;"></div>
+  </div>
+</div>
+
+<script>
+  let debounceTimer1, debounceTimer2;
+
+  document.getElementById('input1').addEventListener('input', () => {
+    clearTimeout(debounceTimer1);
+    debounceTimer1 = setTimeout(() => handleTranslate(1), 600);
+  });
+
+  document.getElementById('input2').addEventListener('input', () => {
+    clearTimeout(debounceTimer2);
+    debounceTimer2 = setTimeout(() => handleTranslate(2), 600);
+  });
+
+  async function translateText(text) {
+    if (!text.trim()) return '';
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      return data[0].map(item => item[0]).join('');
+    } catch (err) {
+      console.error(err);
+      return '翻譯失敗，請檢查網絡連線。';
+    }
+  }
+
+  async function handleTranslate(section) {
+    const inputEl = document.getElementById(`input${section}`);
+    const outputEl = document.getElementById(`output${section}`);
+    const statusEl = document.getElementById(`status${section}`);
+    const text = inputEl.value;
+
+    if (!text.trim()) {
+      outputEl.innerText = '';
+      statusEl.innerText = '等待輸入';
+      updateCombined();
+      return;
+    }
+
+    statusEl.innerText = '翻譯中...';
+    const translated = await translateText(text);
+    outputEl.innerText = translated;
+    statusEl.innerText = '已翻譯';
+    updateCombined();
+  }
+
+  function updateCombined() {
+    const out1 = document.getElementById('output1').innerText.trim();
+    const out2 = document.getElementById('output2').innerText.trim();
+    const combinedEl = document.getElementById('outputCombined');
+
+    let result = '';
+    if (out1) {
+      result += `**Heartfelt Thought:**\n${out1}\n\n`;
+    }
+    if (out2) {
+      result += `**Prayer:**\n${out2}`;
+    }
+
+    combinedEl.innerText = result.trim();
+  }
+
+  function copyText(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
+  }
+
+  function copyCombined() {
+    const text = document.getElementById('outputCombined').innerText;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => alert('已複製完整英文內容！'));
+  }
+
+  function clearAll() {
+    document.getElementById('input1').value = '';
+    document.getElementById('input2').value = '';
+    document.getElementById('output1').innerText = '';
+    document.getElementById('output2').innerText = '';
+    document.getElementById('outputCombined').innerText = '';
+    document.getElementById('status1').innerText = '等待輸入';
+    document.getElementById('status2').innerText = '等待輸入';
+  }
+</script>
+
+</body>
+</html>
